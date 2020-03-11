@@ -17,11 +17,6 @@ class Logger
     private static $logger = null;
 
     /**
-     * @var string
-     */
-    private static $logPath = '.';
-
-    /**
      * @var Monolog
      */
     private $log;
@@ -31,7 +26,7 @@ class Logger
      */
     private function __construct() {
         $this->log = new Monolog('log');
-        $this->log->pushHandler(new StreamHandler(self::$logPath . '/app.log'));
+        $this->log->pushHandler(new StreamHandler(ROOTPATH . '/.data/_logs/app.log'));
     }
 
     private function __clone() {}
@@ -45,10 +40,6 @@ class Logger
         }
 
         return self::$logger;
-    }
-
-    public static function setLogDirectory($path) {
-        self::$logPath = $path;
     }
 
     public function debug($message, array $context = array()) {
