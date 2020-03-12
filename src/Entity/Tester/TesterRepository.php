@@ -95,7 +95,6 @@ class TesterRepository implements TesterRepositoryInterface
         $testerStmt->bindValue(':name', $tester->name);
 
         $testerStmt->execute();
-
     }
 
     /**
@@ -147,6 +146,6 @@ class TesterRepository implements TesterRepositoryInterface
      */
     public function clear()
     {
-        $this->db->getConnection()->exec('TRUNCATE TABLE tester');
+        $this->db->getConnection()->exec('DELETE FROM tester');
     }
 }
