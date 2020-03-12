@@ -15,21 +15,3 @@ $who = $argv[2] ?? null;
 
 $command = new TesterCommand();
 $command->run($task, $who);
-
-//$repo = \Acme\Entity\Tester\TesterRepository::getInstance();
-//$tester = new \Acme\Entity\Tester\TesterDTO();
-//$tester->name = "Janusz";
-//
-//$historyRepo = \Acme\Entity\TestHistory\TestHistoryRepository::getInstance();
-//$history = new \Acme\Entity\TestHistory\TestHistoryDTO();
-//$history->testerId = 1;
-//$history->date = date('Y-m-d');
-//
-//$repo->createSchema();
-//$repo->clear();
-//$repo->add($tester);
-//
-//$historyRepo->createSchema();
-//$historyRepo->clear();
-//$historyRepo->add($history);
-//var_dump($historyRepo->getLast());

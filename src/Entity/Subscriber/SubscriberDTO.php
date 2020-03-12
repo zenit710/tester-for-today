@@ -12,7 +12,7 @@ class SubscriberDTO
     public $id;
 
     /** @var string */
-    public $mail;
+    public $email;
 
     /**
      * @param array $arr
@@ -24,8 +24,8 @@ class SubscriberDTO
         if (!empty($arr['id'])) {
             $subscriber->id = $arr['id'];
         }
-        if (!empty($arr['testemailrId'])) {
-            $subscriber->mail = $arr['mail'];
+        if (!empty($arr['email'])) {
+            $subscriber->email = $arr['email'];
         }
 
         return $subscriber;
