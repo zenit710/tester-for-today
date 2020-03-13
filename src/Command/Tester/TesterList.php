@@ -46,7 +46,10 @@ class TesterList extends AbstractCommand
      */
     public function help(): string
     {
-        return $this->commandName . ' options' . PHP_EOL
+        return 'Print testers list' . PHP_EOL
+            . PHP_EOL
+            . 'Usage:' . PHP_EOL
+            . $this->commandName . ' options' . PHP_EOL
             . "\t options: " . PHP_EOL
             . "\t --help - get help" . PHP_EOL;
     }

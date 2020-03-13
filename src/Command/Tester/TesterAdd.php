@@ -63,9 +63,12 @@ class TesterAdd extends AbstractCommand
      */
     public function help(): string
     {
-        return $this->commandName . ' options' . PHP_EOL
+        return 'Add new tester' . PHP_EOL
+            . PHP_EOL
+            . 'Usage:' . PHP_EOL
+            . $this->commandName . ' options' . PHP_EOL
             . "\t options: " . PHP_EOL
-            . "\t --name=name - set name for added tester (required for add)" . PHP_EOL
+            . "\t --name=name - set name for added tester (required)" . PHP_EOL
             . "\t --help - get help" . PHP_EOL;
     }
 }

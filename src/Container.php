@@ -6,6 +6,7 @@ use Acme\Command\CommandBus;
 use Acme\Command\Tester\TesterAdd;
 use Acme\Command\Tester\TesterDelete;
 use Acme\Command\Tester\TesterList;
+use Acme\Command\Tester\TesterStatusChange;
 use Acme\Entity\Subscriber\SubscriberRepository;
 use Acme\Entity\Tester\TesterRepository;
 use Acme\Entity\TestHistory\TestHistoryRepository;
@@ -95,6 +96,7 @@ class Container
         $commandBus->register(new TesterAdd($testerRepository));
         $commandBus->register(new TesterList($testerRepository));
         $commandBus->register(new TesterDelete($testerRepository));
+        $commandBus->register(new TesterStatusChange($testerRepository));
 
         $this->commandBus = $commandBus;
     }
