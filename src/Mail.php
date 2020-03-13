@@ -13,10 +13,11 @@ class Mail
     const SENDER_MAIL = 'entertainment.tester@gmail.com';
     const SENDER_NAME = 'Entertainment Tester';
     const PASS = 'zaq1@WSX';
+
+    /** @var PHPMailer */
+    private $mailer;
     
-    private $mailer = null;
-    
-    private function __construct() {
+    public function __construct() {
         $this->mailer = new PHPMailer(true);
         $this->mailer->isSMTP();
         $this->mailer->Host = 'smtp.gmail.com';

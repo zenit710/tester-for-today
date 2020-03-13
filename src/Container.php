@@ -27,6 +27,7 @@ class Container
         $this->bootstrapLogger();
         $this->bootstrapDb();
         $this->bootstrapRepositories();
+        $this->bootstrapMailer();
         $this->bootstrapCommandBus();
     }
 
@@ -70,12 +71,18 @@ class Container
         $this->registerService('db', new DbConnection());
     }
 
-    private function bootstrapRepositories() {
+    private function bootstrapRepositories()
+    {
         $db = $this->getService('db');
 
         $this->registerService('TesterRepository', new TesterRepository($db));
         $this->registerService('SubscriberRepository', new SubscriberRepository($db));
         $this->registerService('TestHistoryRepository', new TestHistoryRepository($db));
+    }
+
+    private function bootstrapMailer()
+    {
+        $this->registerService('mail', new Mail());
     }
 
     private function bootstrapCommandBus()
