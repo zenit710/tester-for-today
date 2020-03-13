@@ -10,31 +10,17 @@ use Acme\DbConnection;
  */
 class TesterRepository implements TesterRepositoryInterface
 {
-    /** @var TesterRepository */
-    private static $instance = null;
-
     /** @var DbConnection */
     private $db;
 
     /**
      * TesterRepository constructor.
+     * @param DbConnection $dbConnection
      */
-    private function __construct()
+    public function __construct(DbConnection $dbConnection)
     {
-        $this->db = DbConnection::getInstance();
+        $this->db = $dbConnection;
         $this->createSchema();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function getInstance(): TesterRepositoryInterface
-    {
-        if (is_null(self::$instance)) {
-            self::$instance = new TesterRepository();
-        }
-
-        return self::$instance;
     }
 
     /**

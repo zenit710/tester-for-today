@@ -11,30 +11,17 @@ use Acme\Entity\Tester\TesterDTO;
  */
 class TestHistoryRepository implements TestHistoryRepositoryInterface
 {
-    /** @var TestHistoryRepositoryInterface */
-    private static $instance = null;
-
     /** @var DbConnection */
     private $db;
 
     /**
      * TestHistoryRepository constructor.
+     * @param DbConnection $dbConnection
      */
-    private function __construct()
+    public function __construct(DbConnection $dbConnection)
     {
-        $this->db = DbConnection::getInstance();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function getInstance(): TestHistoryRepositoryInterface
-    {
-        if (is_null(self::$instance)) {
-            self::$instance = new TestHistoryRepository();
-        }
-
-        return self::$instance;
+        $this->db = $dbConnection;
+        $this->createSchema();
     }
 
     /**

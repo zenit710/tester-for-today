@@ -10,11 +10,6 @@ use Acme\Entity\Tester\TesterDTO;
  */
 interface TestHistoryRepositoryInterface
 {
-    /**
-     * @return TestHistoryRepositoryInterface
-     */
-    public static function getInstance(): TestHistoryRepositoryInterface;
-
     public function createSchema();
 
     /**

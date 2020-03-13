@@ -22,24 +22,9 @@ class Container
 
     public function bootstrap()
     {
+        $this->bootstrapDb();
         $this->bootstrapRepositories();
         $this->bootstrapCommandBus();
-    }
-
-    public function bootstrapRepositories() {
-        $this->registerService('TesterRepository', TesterRepository::getInstance());
-        $this->registerService('SubscriberRepository', SubscriberRepository::getInstance());
-        $this->registerService('TestHistoryRepository', TestHistoryRepository::getInstance());
-    }
-
-    public function bootstrapCommandBus()
-    {
-        $testerRepository = $this->getService('TesterRepository');
-
-        $commandBus = new CommandBus();
-        $commandBus->register(new TesterAdd($testerRepository));
-
-        $this->commandBus = $commandBus;
     }
 
     /**
@@ -67,5 +52,28 @@ class Container
     public function handle(string $command, array $args)
     {
         echo $this->commandBus->handle($command, $args);
+    }
+
+    private function bootstrapDb()
+    {
+        $this->registerService('db', new DbConnection());
+    }
+
+    private function bootstrapRepositories() {
+        $db = $this->getService('db');
+
+        $this->registerService('TesterRepository', new TesterRepository($db));
+        $this->registerService('SubscriberRepository', new SubscriberRepository($db));
+        $this->registerService('TestHistoryRepository', new TestHistoryRepository($db));
+    }
+
+    private function bootstrapCommandBus()
+    {
+        $testerRepository = $this->getService('TesterRepository');
+
+        $commandBus = new CommandBus();
+        $commandBus->register(new TesterAdd($testerRepository));
+
+        $this->commandBus = $commandBus;
     }
 }

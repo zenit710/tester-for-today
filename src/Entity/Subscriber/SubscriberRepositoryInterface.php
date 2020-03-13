@@ -8,11 +8,6 @@ namespace Acme\Entity\Subscriber;
  */
 interface SubscriberRepositoryInterface
 {
-    /**
-     * @return SubscriberRepositoryInterface
-     */
-    public static function getInstance(): SubscriberRepositoryInterface;
-
     public function createSchema();
 
     /**

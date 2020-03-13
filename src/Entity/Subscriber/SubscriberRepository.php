@@ -10,30 +10,17 @@ use Acme\DbConnection;
  */
 class SubscriberRepository implements SubscriberRepositoryInterface
 {
-    /** @var SubscriberRepositoryInterface */
-    private static $instance = null;
-
     /** @var DbConnection */
     private $db;
 
     /**
      * SubscriberRepository constructor.
+     * @param DbConnection $dbConnection
      */
-    private function __construct()
+    public function __construct(DbConnection $dbConnection)
     {
-        $this->db = DbConnection::getInstance();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function getInstance(): SubscriberRepositoryInterface
-    {
-        if (is_null(self::$instance)) {
-            self::$instance = new SubscriberRepository();
-        }
-
-        return self::$instance;
+        $this->db = $dbConnection;
+        $this->createSchema();
     }
 
     /**

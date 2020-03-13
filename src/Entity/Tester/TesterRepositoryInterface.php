@@ -8,11 +8,6 @@ namespace Acme\Entity\Tester;
  */
 interface TesterRepositoryInterface
 {
-    /**
-     * @return TesterRepositoryInterface
-     */
-    public static function getInstance(): TesterRepositoryInterface;
-
     public function createSchema();
 
     /**
