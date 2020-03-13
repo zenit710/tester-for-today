@@ -47,6 +47,10 @@ class TesterStatusChange extends AbstractCommand
             throw new MissingArgumentException($this->help());
         }
 
+        if ($this->hasHelpArg()) {
+            return $this->help();
+        }
+
         if (array_key_exists(self::ARG_ACTIVE, $this->commandArgs)) {
             $this->repository->activate($this->commandArgs[self::ARG_ID]);
         } else if (array_key_exists(self::ARG_INACTIVE, $this->commandArgs)) {

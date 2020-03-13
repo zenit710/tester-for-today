@@ -3,24 +3,18 @@
 namespace Acme\Command\Tester;
 
 use Acme\Command\AbstractCommand;
-use Acme\Command\MissingArgumentException;
 use Acme\Entity\Tester\TesterRepositoryInterface;
 
 /**
- * Class TesterDelete
+ * Class TesterClear
  * @package Acme\Command\Tester
  */
-class TesterDelete extends AbstractCommand
+class TesterClear extends AbstractCommand
 {
-    const SUCCESS_MESSAGE = 'Tester deleted!' . PHP_EOL;
-
-    const ARG_ID = 'id';
-    const REQUIRED_ARGS = [
-        self::ARG_ID
-    ];
+    const SUCCESS_MESSAGE = 'All testers removed!' . PHP_EOL;
 
     /** @var string */
-    protected $commandName = 'tester:delete';
+    protected $commandName = 'tester:clear';
 
     /** @var TesterRepositoryInterface */
     private $repository;
@@ -41,15 +35,11 @@ class TesterDelete extends AbstractCommand
     {
         $this->mapArgs($args);
 
-        if (!$this->validateArgs(self::REQUIRED_ARGS)) {
-            throw new MissingArgumentException($this->help());
-        }
-
         if ($this->hasHelpArg()) {
             return $this->help();
         }
 
-        $this->repository->delete($this->commandArgs[self::ARG_ID]);
+        $this->repository->clear();
 
         return self::SUCCESS_MESSAGE;
     }
@@ -59,12 +49,11 @@ class TesterDelete extends AbstractCommand
      */
     public function help(): string
     {
-        return 'Delete tester' . PHP_EOL
+        return 'Clear testers' . PHP_EOL
             . PHP_EOL
             . 'Usage:' . PHP_EOL
             . $this->commandName . ' options' . PHP_EOL
             . "\t options: " . PHP_EOL
-            . "\t --id=id - set id for tester to delete (required)" . PHP_EOL
             . "\t --help - get help" . PHP_EOL;
     }
 }

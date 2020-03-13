@@ -4,6 +4,7 @@ namespace Acme;
 
 use Acme\Command\CommandBus;
 use Acme\Command\Tester\TesterAdd;
+use Acme\Command\Tester\TesterClear;
 use Acme\Command\Tester\TesterDelete;
 use Acme\Command\Tester\TesterList;
 use Acme\Command\Tester\TesterStatusChange;
@@ -97,6 +98,7 @@ class Container
         $commandBus->register(new TesterList($testerRepository));
         $commandBus->register(new TesterDelete($testerRepository));
         $commandBus->register(new TesterStatusChange($testerRepository));
+        $commandBus->register(new TesterClear($testerRepository));
 
         $this->commandBus = $commandBus;
     }

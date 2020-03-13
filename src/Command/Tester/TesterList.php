@@ -36,6 +36,10 @@ class TesterList extends AbstractCommand
     {
         $this->mapArgs($args);
 
+        if ($this->hasHelpArg()) {
+            return $this->help();
+        }
+
         $testers = $this->repository->getAll();
 
         return $this->castTestersArrayToString($testers);
