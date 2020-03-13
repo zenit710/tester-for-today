@@ -15,16 +15,35 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger as Monolog;
 
 /**
- * Class Container
+ * Class AppKernel
  * @package Acme
  */
-class Container
+class AppKernel
 {
+    /** @var AppKernel */
+    private static $instance = null;
+
     /** @var array */
     private $services = [];
 
     /** @var CommandBus */
     private $commandBus;
+
+    private function __construct() {}
+
+    private function __clone() {}
+
+    /**
+     * @return AppKernel
+     */
+    public static function getInstance(): AppKernel
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new AppKernel();
+        }
+
+        return self::$instance;
+    }
 
     public function bootstrap()
     {

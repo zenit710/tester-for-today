@@ -4,7 +4,7 @@ define('ROOTPATH', __DIR__);
 
 require __DIR__ . '/vendor/autoload.php';
 
-$container = new \Acme\Container();
+$container = \Acme\AppKernel::getInstance();
 $container->bootstrap();
 
 $container->handle($argv[1], $argv);
