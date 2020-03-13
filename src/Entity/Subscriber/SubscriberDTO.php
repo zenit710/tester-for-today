@@ -14,6 +14,9 @@ class SubscriberDTO
     /** @var string */
     public $email;
 
+    /** @var bool */
+    public $active;
+
     /**
      * @param array $arr
      * @return SubscriberDTO
@@ -26,6 +29,9 @@ class SubscriberDTO
         }
         if (!empty($arr['email'])) {
             $subscriber->email = $arr['email'];
+        }
+        if (!empty($arr['active'])) {
+            $subscriber->active = !!$arr['active'];
         }
 
         return $subscriber;

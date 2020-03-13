@@ -31,7 +31,8 @@ class SubscriberRepository implements SubscriberRepositoryInterface
         $this->db->getConnection()->exec('
             CREATE TABLE IF NOT EXISTS subscriber (
                 id INTEGER PRIMARY KEY,
-                email TEXT NOT NULL UNIQUE
+                email TEXT NOT NULL UNIQUE,
+                active INTEGER NOT NULL DEFAULT 1
             )
         ');
     }
@@ -92,6 +93,36 @@ class SubscriberRepository implements SubscriberRepositoryInterface
     {
         $subscriberStmt = $this->db->getConnection()->prepare('
             DELETE FROM subscriber
+            WHERE id = :id
+        ');
+        $subscriberStmt->bindValue(':id', $id);
+
+        $subscriberStmt->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function activate(int $id)
+    {
+        $subscriberStmt = $this->db->getConnection()->prepare('
+            UPDATE subscriber 
+            SET active = 1
+            WHERE id = :id
+        ');
+        $subscriberStmt->bindValue(':id', $id);
+
+        $subscriberStmt->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deactivate(int $id)
+    {
+        $subscriberStmt = $this->db->getConnection()->prepare('
+            UPDATE subscriber 
+            SET active = 0
             WHERE id = :id
         ');
         $subscriberStmt->bindValue(':id', $id);

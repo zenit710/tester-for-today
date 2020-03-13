@@ -3,6 +3,11 @@
 namespace Acme;
 
 use Acme\Command\CommandBus;
+use Acme\Command\Subscriber\SubscriberAdd;
+use Acme\Command\Subscriber\SubscriberClear;
+use Acme\Command\Subscriber\SubscriberDelete;
+use Acme\Command\Subscriber\SubscriberList;
+use Acme\Command\Subscriber\SubscriberStatusChange;
 use Acme\Command\Tester\TesterAdd;
 use Acme\Command\Tester\TesterClear;
 use Acme\Command\Tester\TesterDelete;
@@ -111,13 +116,23 @@ class AppKernel
     private function bootstrapCommandBus()
     {
         $testerRepository = $this->getService('TesterRepository');
+        $subscriberRepository = $this->getService('SubscriberRepository');
 
         $commandBus = new CommandBus();
+
+        // Tester Commands
         $commandBus->register(new TesterAdd($testerRepository));
         $commandBus->register(new TesterList($testerRepository));
         $commandBus->register(new TesterDelete($testerRepository));
         $commandBus->register(new TesterStatusChange($testerRepository));
         $commandBus->register(new TesterClear($testerRepository));
+
+        // SubscriberCommands
+        $commandBus->register(new SubscriberAdd($subscriberRepository));
+        $commandBus->register(new SubscriberList($subscriberRepository));
+        $commandBus->register(new SubscriberDelete($subscriberRepository));
+        $commandBus->register(new SubscriberStatusChange($subscriberRepository));
+        $commandBus->register(new SubscriberClear($subscriberRepository));
 
         $this->commandBus = $commandBus;
     }

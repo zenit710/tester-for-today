@@ -31,5 +31,15 @@ interface SubscriberRepositoryInterface
      */
     public function delete(int $id);
 
+    /**
+     * @param int $id
+     */
+    public function activate(int $id);
+
+    /**
+     * @param int $id
+     */
+    public function deactivate(int $id);
+
     public function clear();
 }
