@@ -11,3 +11,5 @@ $testerRepo = $container->getService('TesterRepository');
 $testerRepo->clear();
 $container->handle($argv[1], $argv);
 $container->handle('tester:list', []);
+$container->handle('tester:delete', ['--id=1']);
+$container->handle('tester:list', []);

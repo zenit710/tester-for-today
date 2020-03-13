@@ -12,6 +12,8 @@ use Acme\Entity\Tester\TesterRepositoryInterface;
  */
 class TesterList extends AbstractCommand
 {
+    const NO_TESTERS_MESSAGE = 'There are no testers!' . PHP_EOL;
+
     /** @var string */
     protected $commandName = 'tester:list';
 
@@ -55,6 +57,10 @@ class TesterList extends AbstractCommand
      */
     private function castTestersArrayToString(array $testers): string
     {
+        if (count($testers) === 0) {
+            return self::NO_TESTERS_MESSAGE;
+        }
+
         $columnsSizes = [
             'id' => 2,
             'name' => 4,
