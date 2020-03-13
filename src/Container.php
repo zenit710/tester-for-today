@@ -7,6 +7,8 @@ use Acme\Command\Tester\TesterAdd;
 use Acme\Entity\Subscriber\SubscriberRepository;
 use Acme\Entity\Tester\TesterRepository;
 use Acme\Entity\TestHistory\TestHistoryRepository;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger as Monolog;
 
 /**
  * Class Container
@@ -22,6 +24,7 @@ class Container
 
     public function bootstrap()
     {
+        $this->bootstrapLogger();
         $this->bootstrapDb();
         $this->bootstrapRepositories();
         $this->bootstrapCommandBus();
@@ -52,6 +55,14 @@ class Container
     public function handle(string $command, array $args)
     {
         echo $this->commandBus->handle($command, $args);
+    }
+
+    private function bootstrapLogger()
+    {
+        $logger = new Monolog('log');
+        $logger->pushHandler(new StreamHandler(ROOTPATH . '/.data/_logs/app.log'));
+
+        $this->registerService('logger', $logger);
     }
 
     private function bootstrapDb()

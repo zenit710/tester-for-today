@@ -4,14 +4,11 @@ define('ROOTPATH', __DIR__);
 
 require __DIR__ . '/vendor/autoload.php';
 
-use \Acme\TesterCommand;
+$container = new \Acme\Container();
+$container->bootstrap();
 
-if (count($argv) < 2) {
-    echo "za mało patametrów" . PHP_EOL . "php app.php (next|choose) [who]" . PHP_EOL;
-}
+$testerRepo = $container->getService('TesterRepository');
+$testerRepo->clear();
+$container->handle($argv[1], $argv);
 
-$task = $argv[1];
-$who = $argv[2] ?? null;
-
-$command = new TesterCommand();
-$command->run($task, $who);
+var_dump($testerRepo->getAll());
