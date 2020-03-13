@@ -10,5 +10,4 @@ $container->bootstrap();
 $testerRepo = $container->getService('TesterRepository');
 $testerRepo->clear();
 $container->handle($argv[1], $argv);
-
-var_dump($testerRepo->getAll());
+$container->handle('tester:list', []);

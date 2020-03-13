@@ -11,13 +11,11 @@ abstract class AbstractCommand
     const ARG_PATTERN = '/--\w+(=\w+)?/';
     const ARG_HELP = 'help';
 
-    protected $commandArgs = [];
+    /** @var string */
+    protected $commandName = '';
 
-    /**
-     * @param string $name
-     * @return bool
-     */
-    public abstract function supports(string $name): bool;
+    /** @var array */
+    protected $commandArgs = [];
 
     /**
      * @param string[] $args
@@ -30,6 +28,17 @@ abstract class AbstractCommand
      * @return string
      */
     public abstract function help(): string;
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function supports(string $name): bool
+    {
+//        var_dump($name, $this->commandName);
+
+        return $this->commandName === $name;
+    }
 
     /**
      * @param string[] $args

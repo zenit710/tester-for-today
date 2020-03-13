@@ -13,13 +13,15 @@ use Acme\Entity\Tester\TesterRepositoryInterface;
  */
 class TesterAdd extends AbstractCommand
 {
-    const COMMAND_NAME = 'tester:add';
-    const SUCCESS_MESSAGE = 'New tester added!';
+    const SUCCESS_MESSAGE = 'New tester added!' . PHP_EOL;
 
     const ARG_NAME = 'name';
     const REQUIRED_ARGS = [
         self::ARG_NAME
     ];
+
+    /** @var string */
+    protected $commandName = 'tester:add';
 
     /** @var TesterRepositoryInterface */
     private $repository;
@@ -31,14 +33,6 @@ class TesterAdd extends AbstractCommand
     public function __construct(TesterRepositoryInterface $repository)
     {
         $this->repository = $repository;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function supports(string $name): bool
-    {
-        return self::COMMAND_NAME == $name;
     }
 
     /**
@@ -69,7 +63,7 @@ class TesterAdd extends AbstractCommand
      */
     public function help(): string
     {
-        return self::COMMAND_NAME . ' options' . PHP_EOL
+        return $this->commandName . ' options' . PHP_EOL
             . "\t options: " . PHP_EOL
             . "\t --name=name - set name for added tester (required for add)" . PHP_EOL
             . "\t --help - get help" . PHP_EOL;

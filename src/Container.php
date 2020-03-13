@@ -4,6 +4,7 @@ namespace Acme;
 
 use Acme\Command\CommandBus;
 use Acme\Command\Tester\TesterAdd;
+use Acme\Command\Tester\TesterList;
 use Acme\Entity\Subscriber\SubscriberRepository;
 use Acme\Entity\Tester\TesterRepository;
 use Acme\Entity\TestHistory\TestHistoryRepository;
@@ -91,6 +92,7 @@ class Container
 
         $commandBus = new CommandBus();
         $commandBus->register(new TesterAdd($testerRepository));
+        $commandBus->register(new TesterList($testerRepository));
 
         $this->commandBus = $commandBus;
     }

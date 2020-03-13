@@ -2,7 +2,7 @@
 
 namespace Acme;
 
-use PHPMailer;
+use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * Class Mail

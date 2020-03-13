@@ -39,9 +39,9 @@ class CommandBus
                 } catch (\Exception $e) {
                     return $e->getMessage();
                 }
-            } else {
-                return "There is no such command!";
             }
         }
+
+        return "There is no such command!";
     }
 }
