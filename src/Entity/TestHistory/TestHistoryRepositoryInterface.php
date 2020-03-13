@@ -2,6 +2,7 @@
 
 namespace Acme\Entity\TestHistory;
 
+use Acme\Entity\NoResultException;
 use Acme\Entity\Tester\TesterDTO;
 
 /**
@@ -14,8 +15,9 @@ interface TestHistoryRepositoryInterface
 
     /**
      * @return TesterDTO
+     * @throws NoResultException
      */
-    public function getLast(): TesterDTO;
+    public function getLastTester(): TesterDTO;
 
     /**
      * @param TestHistoryDTO $test

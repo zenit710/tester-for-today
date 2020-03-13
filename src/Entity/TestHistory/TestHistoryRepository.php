@@ -3,6 +3,7 @@
 namespace Acme\Entity\TestHistory;
 
 use Acme\DbConnection;
+use Acme\Entity\NoResultException;
 use Acme\Entity\Tester\TesterDTO;
 
 /**
@@ -43,7 +44,7 @@ class TestHistoryRepository implements TestHistoryRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getLast(): TesterDTO
+    public function getLastTester(): TesterDTO
     {
         $last = $this->db->getConnection()->querySingle('
             SELECT *
@@ -51,6 +52,10 @@ class TestHistoryRepository implements TestHistoryRepositoryInterface
             JOIN tester ON tester_id = tester.id
             ORDER BY tester_history.id DESC
         ', true);
+
+        if (empty($last)) {
+            throw new NoResultException('Cannot fetch last tester.');
+        }
 
         return TesterDTO::fromArray($last);
     }

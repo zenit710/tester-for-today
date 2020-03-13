@@ -13,6 +13,7 @@ use Acme\Command\Tester\TesterClear;
 use Acme\Command\Tester\TesterDelete;
 use Acme\Command\Tester\TesterList;
 use Acme\Command\Tester\TesterStatusChange;
+use Acme\Command\TestHistory\TestHistoryCurrent;
 use Acme\Entity\Subscriber\SubscriberRepository;
 use Acme\Entity\Tester\TesterRepository;
 use Acme\Entity\TestHistory\TestHistoryRepository;
@@ -117,6 +118,7 @@ class AppKernel
     {
         $testerRepository = $this->getService('TesterRepository');
         $subscriberRepository = $this->getService('SubscriberRepository');
+        $historyRepository = $this->getService('TestHistoryRepository');
 
         $commandBus = new CommandBus();
 
@@ -133,6 +135,9 @@ class AppKernel
         $commandBus->register(new SubscriberDelete($subscriberRepository));
         $commandBus->register(new SubscriberStatusChange($subscriberRepository));
         $commandBus->register(new SubscriberClear($subscriberRepository));
+
+        // TestHistoryCommands
+        $commandBus->register(new TestHistoryCurrent($historyRepository));
 
         $this->commandBus = $commandBus;
     }
