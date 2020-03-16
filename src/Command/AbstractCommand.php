@@ -79,6 +79,28 @@ abstract class AbstractCommand
      */
     protected function hasHelpArg(): bool
     {
-        return in_array(self::ARG_HELP, $this->commandArgs);
+        return $this->hasArg(self::ARG_HELP);
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    protected function hasArg(string $name): bool
+    {
+        return array_key_exists($name, $this->commandArgs);
+    }
+
+    /**
+     * @param string $name
+     * @return string|null
+     */
+    protected function getArg(string $name)
+    {
+        if ($this->hasArg($name)) {
+            return $this->commandArgs[$name];
+        }
+
+        return null;
     }
 }

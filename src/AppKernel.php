@@ -13,6 +13,8 @@ use Acme\Command\Tester\TesterClear;
 use Acme\Command\Tester\TesterDelete;
 use Acme\Command\Tester\TesterList;
 use Acme\Command\Tester\TesterStatusChange;
+use Acme\Command\TestHistory\TestHistoryAdd;
+use Acme\Command\TestHistory\TestHistoryClear;
 use Acme\Command\TestHistory\TestHistoryCurrent;
 use Acme\Entity\Subscriber\SubscriberRepository;
 use Acme\Entity\Tester\TesterRepository;
@@ -138,6 +140,8 @@ class AppKernel
 
         // TestHistoryCommands
         $commandBus->register(new TestHistoryCurrent($historyRepository));
+        $commandBus->register(new TestHistoryClear($historyRepository));
+        $commandBus->register(new TestHistoryAdd($historyRepository, $testerRepository));
 
         $this->commandBus = $commandBus;
     }

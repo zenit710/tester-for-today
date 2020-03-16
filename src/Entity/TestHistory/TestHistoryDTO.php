@@ -18,6 +18,15 @@ class TestHistoryDTO
     public $date;
 
     /**
+     * TestHistoryDTO constructor.
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        $this->date = (new \DateTime())->format('Y-m-d');
+    }
+
+    /**
      * @param array $arr
      * @return TestHistoryDTO
      */

@@ -9,15 +9,15 @@ $container->bootstrap();
 
 $container->handle($argv[1], $argv);
 
-//$container->handle('subscriber:clear', []);
-//$container->handle('subscriber:add', ['--email=jan.kowalski@onet.pl']);
-//$container->handle('subscriber:add', ['--email=jaroslaw.kowalski@onet.pl']);
-//$container->handle('subscriber:list', []);
-//$container->handle('subscriber:status', ['--id=1']);
-//$container->handle('subscriber:list', []);
-//$container->handle('subscriber:status', ['--id=1', '--active']);
-//$container->handle('subscriber:list', []);
-//$container->handle('subscriber:status', ['--id=1', '--inactive']);
-//$container->handle('subscriber:list', []);
-//$container->handle('subscriber:delete', ['--id=1']);
-//$container->handle('subscriber:list', []);
+$container->handle('tester:clear', []);
+$container->handle('tester:add', ['--name=Janusz']);
+$container->handle('tester:add', ['--name=Bonaventura']);
+$container->handle('test-history:clear', []);
+$container->handle('test-history:add', ['--auto']);
+$container->handle('test-history:current', []);
+$container->handle('test-history:add', ['--manual', '--id=2']);
+$container->handle('test-history:current', []);
+$container->handle('test-history:add', ['--auto']);
+$container->handle('test-history:current', []);
+$container->handle('test-history:add', ['--auto']);
+$container->handle('test-history:current', []);

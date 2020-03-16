@@ -72,6 +72,31 @@ class TesterRepository implements TesterRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function getNextById(int $id): TesterDTO
+    {
+        $testerStmt = $this->db->getConnection()->prepare('
+            SELECT *
+            FROM tester
+            WHERE id > :id
+            LIMIT 1
+        ');
+        $testerStmt->bindValue(':id', $id);
+
+        $tester = $testerStmt->execute()->fetchArray(SQLITE3_ASSOC);
+
+        if (empty($tester)) {
+            $tester = $this->db->getConnection()->querySingle('
+                SELECT *
+                FROM tester
+            ', true);
+        }
+
+        return TesterDTO::fromArray($tester);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function add(TesterDTO $tester)
     {
         $testerStmt = $this->db->getConnection()->prepare('

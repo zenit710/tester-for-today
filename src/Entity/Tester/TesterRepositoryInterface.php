@@ -22,6 +22,12 @@ interface TesterRepositoryInterface
     public function getById(int $id): TesterDTO;
 
     /**
+     * @param int $id
+     * @return TesterDTO
+     */
+    public function getNextById(int $id): TesterDTO;
+
+    /**
      * @param TesterDTO $tester
      */
     public function add(TesterDTO $tester);
