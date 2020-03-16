@@ -17,10 +17,8 @@ composer install
 
 ### TODO
 
-* choose tester manually
-* choose next tester automatically
+* add logging to commands using PSR Log Interface
 * add list of possible commands
 * throw exceptions in repositories when no results
 * write unit tests
-* add logging to commands using PSR Log Interface
 * add helper for pretty console printing

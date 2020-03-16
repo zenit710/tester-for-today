@@ -4,20 +4,22 @@ define('ROOTPATH', __DIR__);
 
 require __DIR__ . '/vendor/autoload.php';
 
-$container = \Acme\AppKernel::getInstance();
-$container->bootstrap();
+$kernel = \Acme\AppKernel::getInstance();
+$kernel->bootstrap();
 
-$container->handle($argv[1], $argv);
+$kernel->handle($argv[1], $argv);
 
-$container->handle('tester:clear', []);
-$container->handle('tester:add', ['--name=Janusz']);
-$container->handle('tester:add', ['--name=Bonaventura']);
-$container->handle('test-history:clear', []);
-$container->handle('test-history:add', ['--auto']);
-$container->handle('test-history:current', []);
-$container->handle('test-history:add', ['--manual', '--id=2']);
-$container->handle('test-history:current', []);
-$container->handle('test-history:add', ['--auto']);
-$container->handle('test-history:current', []);
-$container->handle('test-history:add', ['--auto']);
-$container->handle('test-history:current', []);
+$kernel->handle('tester:clear', []);
+$kernel->handle('subscriber:clear', []);
+$kernel->handle('subscriber:add', ['--email=kamil_malek@tvn.pl']);
+$kernel->handle('tester:add', ['--name=Janusz']);
+$kernel->handle('tester:add', ['--name=Bonaventura']);
+$kernel->handle('test-history:clear', []);
+$kernel->handle('switch:tester', ['--auto']);
+$kernel->handle('test-history:current', []);
+$kernel->handle('switch:tester', ['--manual', '--id=2']);
+$kernel->handle('test-history:current', []);
+$kernel->handle('switch:tester', ['--auto']);
+$kernel->handle('test-history:current', []);
+$kernel->handle('switch:tester', ['--auto']);
+$kernel->handle('test-history:current', []);

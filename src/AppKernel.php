@@ -8,12 +8,12 @@ use Acme\Command\Subscriber\SubscriberClear;
 use Acme\Command\Subscriber\SubscriberDelete;
 use Acme\Command\Subscriber\SubscriberList;
 use Acme\Command\Subscriber\SubscriberStatusChange;
+use Acme\Command\SwitchTester;
 use Acme\Command\Tester\TesterAdd;
 use Acme\Command\Tester\TesterClear;
 use Acme\Command\Tester\TesterDelete;
 use Acme\Command\Tester\TesterList;
 use Acme\Command\Tester\TesterStatusChange;
-use Acme\Command\TestHistory\TestHistoryAdd;
 use Acme\Command\TestHistory\TestHistoryClear;
 use Acme\Command\TestHistory\TestHistoryCurrent;
 use Acme\Entity\Subscriber\SubscriberRepository;
@@ -141,7 +141,9 @@ class AppKernel
         // TestHistoryCommands
         $commandBus->register(new TestHistoryCurrent($historyRepository));
         $commandBus->register(new TestHistoryClear($historyRepository));
-        $commandBus->register(new TestHistoryAdd($historyRepository, $testerRepository));
+
+        // Switch
+        $commandBus->register(new SwitchTester($historyRepository, $testerRepository, $subscriberRepository));
 
         $this->commandBus = $commandBus;
     }
