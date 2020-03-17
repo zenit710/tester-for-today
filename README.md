@@ -17,6 +17,7 @@ composer install
 
 ### TODO
 
+* move db location, .data dir and mail credentials to .env
 * write unit tests
 * add helper for pretty console printing
 * __uncomment notification send in TesterSwitch command!__
