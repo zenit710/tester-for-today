@@ -4,6 +4,7 @@ namespace Acme\Command\Subscriber;
 
 use Acme\Command\AbstractCommand;
 use Acme\Entity\Subscriber\SubscriberDTO;
+use Acme\Entity\Subscriber\SubscriberFilter;
 use Acme\Entity\Subscriber\SubscriberRepositoryInterface;
 
 /**
@@ -13,6 +14,7 @@ use Acme\Entity\Subscriber\SubscriberRepositoryInterface;
 class SubscriberList extends AbstractCommand
 {
     const NO_SUBSCRIBERS_MESSAGE = 'There are no subscribers!' . PHP_EOL;
+    const ARG_ACTIVE = 'active';
 
     /** @var string */
     protected $commandName = 'subscriber:list';
@@ -40,7 +42,13 @@ class SubscriberList extends AbstractCommand
             return $this->help();
         }
 
-        $subscribers = $this->repository->getAll();
+        $filter = new SubscriberFilter();
+
+        if ($this->hasArg(self::ARG_ACTIVE)) {
+            $filter->setActive($this->getArg(self::ARG_ACTIVE));
+        }
+
+        $subscribers = $this->repository->getAll($filter);
 
         return $this->castSubscribersArrayToString($subscribers);
     }
@@ -55,6 +63,7 @@ class SubscriberList extends AbstractCommand
             . 'Usage:' . PHP_EOL
             . $this->commandName . ' options' . PHP_EOL
             . "\t options: " . PHP_EOL
+            . "\t --active=[0|1] - list only active/inactive members" . PHP_EOL
             . "\t --help - get help" . PHP_EOL;
     }
 

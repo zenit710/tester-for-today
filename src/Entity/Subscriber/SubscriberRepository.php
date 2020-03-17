@@ -40,12 +40,15 @@ class SubscriberRepository implements SubscriberRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getAll(): array
+    public function getAll(SubscriberFilter $filter = null): array
     {
-        $subscribers = $this->db->getConnection()->query('
-            SELECT *
-            FROM subscriber
-        ');
+        $query = 'SELECT * FROM subscriber';
+
+        if (!is_null($filter) && $filter->isAdjusted()) {
+            $query .= ' ' . $filter->toWhereClause();
+        }
+
+        $subscribers = $this->db->getConnection()->query($query);
 
         $DTOs = [];
         while ($subscriber = $subscribers->fetchArray(SQLITE3_ASSOC)) {

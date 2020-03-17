@@ -4,6 +4,7 @@ namespace Acme\Command\Member;
 
 use Acme\Command\AbstractCommand;
 use Acme\Entity\Member\MemberDTO;
+use Acme\Entity\Member\MemberFilter;
 use Acme\Entity\Member\MemberRepositoryInterface;
 
 /**
@@ -13,6 +14,7 @@ use Acme\Entity\Member\MemberRepositoryInterface;
 class MemberList extends AbstractCommand
 {
     const NO_MEMBERS_MESSAGE = 'There are no members!' . PHP_EOL;
+    const ARG_ACTIVE = 'active';
 
     /** @var string */
     protected $commandName = 'member:list';
@@ -40,7 +42,13 @@ class MemberList extends AbstractCommand
             return $this->help();
         }
 
-        $members = $this->repository->getAll();
+        $filter = new MemberFilter();
+
+        if ($this->hasArg(self::ARG_ACTIVE)) {
+            $filter->setActive($this->getArg(self::ARG_ACTIVE));
+        }
+
+        $members = $this->repository->getAll($filter);
 
         return $this->castMembersArrayToString($members);
     }
@@ -55,6 +63,7 @@ class MemberList extends AbstractCommand
             . 'Usage:' . PHP_EOL
             . $this->commandName . ' options' . PHP_EOL
             . "\t options: " . PHP_EOL
+            . "\t --active=[0|1] - list only active/inactive members" . PHP_EOL
             . "\t --help - get help" . PHP_EOL;
     }
 

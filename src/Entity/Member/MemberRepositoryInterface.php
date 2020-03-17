@@ -11,9 +11,10 @@ interface MemberRepositoryInterface
     public function createSchema();
 
     /**
+     * @param MemberFilter|null $filter
      * @return MemberDTO[]
      */
-    public function getAll(): array;
+    public function getAll(MemberFilter $filter = null): array;
 
     /**
      * @param int $id

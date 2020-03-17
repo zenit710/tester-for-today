@@ -40,11 +40,15 @@ class MemberRepository implements MemberRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getAll(): array
+    public function getAll(MemberFilter $filter = null): array
     {
-        $members = $this->db->getConnection()->query('
-            SELECT * FROM member
-        ');
+        $query = 'SELECT * FROM member';
+
+        if (!is_null($filter) && $filter->isAdjusted()) {
+            $query .= ' ' . $filter->toWhereClause();
+        }
+
+        $members = $this->db->getConnection()->query($query);
 
         $DTOs = [];
         while ($member = $members->fetchArray(SQLITE3_ASSOC)) {

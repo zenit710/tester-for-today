@@ -5,6 +5,7 @@ namespace Acme\Command\Tester;
 use Acme\Command\AbstractCommand;
 use Acme\Command\MissingArgumentException;
 use Acme\Entity\NoResultException;
+use Acme\Entity\Subscriber\SubscriberFilter;
 use Acme\Entity\Subscriber\SubscriberRepositoryInterface;
 use Acme\Entity\Member\MemberDTO;
 use Acme\Entity\Member\MemberRepositoryInterface;
@@ -123,7 +124,10 @@ class TesterSwitch extends AbstractCommand
      */
     private function notifySubscribers(MemberDTO $newTester)
     {
-        $subscribers = $this->subscriberRepository->getAll();
+        $subscriberFilter = new SubscriberFilter();
+        $subscriberFilter->setActive(true);
+
+        $subscribers = $this->subscriberRepository->getAll($subscriberFilter);
         $message = sprintf(self::MESSAGE_PATTERN, date('d-m-Y'), $newTester->name);
 
         $mail = new Mail();

@@ -11,9 +11,10 @@ interface SubscriberRepositoryInterface
     public function createSchema();
 
     /**
+     * @param SubscriberFilter $filter
      * @return SubscriberDTO[]
      */
-    public function getAll(): array;
+    public function getAll(SubscriberFilter $filter = null): array;
 
     /**
      * @param int $id
