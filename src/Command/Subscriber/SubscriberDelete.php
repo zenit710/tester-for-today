@@ -5,6 +5,7 @@ namespace Acme\Command\Subscriber;
 use Acme\Command\AbstractCommand;
 use Acme\Command\MissingArgumentException;
 use Acme\Entity\Subscriber\SubscriberRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class SubscriberDelete
@@ -27,10 +28,12 @@ class SubscriberDelete extends AbstractCommand
 
     /**
      * SubscriberDelete constructor.
+     * @param LoggerInterface $logger
      * @param SubscriberRepositoryInterface $repository
      */
-    public function __construct(SubscriberRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, SubscriberRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 
@@ -49,7 +52,8 @@ class SubscriberDelete extends AbstractCommand
             return $this->help();
         }
 
-        $this->repository->delete($this->commandArgs[self::ARG_ID]);
+        $this->repository->delete($this->getArg(self::ARG_ID));
+        $this->logger->info('Subscriber id: ' . $this->getArg(self::ARG_ID) . ' deleted');
 
         return self::SUCCESS_MESSAGE;
     }

@@ -4,6 +4,7 @@ namespace Acme\Command\Tester;
 
 use Acme\Command\AbstractCommand;
 use Acme\Entity\Tester\TesterRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class TesterClear
@@ -21,10 +22,12 @@ class TesterClear extends AbstractCommand
 
     /**
      * TesterClear constructor.
+     * @param LoggerInterface $logger
      * @param TesterRepositoryInterface $repository
      */
-    public function __construct(TesterRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, TesterRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 
@@ -40,6 +43,7 @@ class TesterClear extends AbstractCommand
         }
 
         $this->repository->clear();
+        $this->logger->info('Tester history cleared');
 
         return self::SUCCESS_MESSAGE;
     }

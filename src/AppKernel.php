@@ -121,27 +121,28 @@ class AppKernel
         $memberRepository = $this->getService('MemberRepository');
         $subscriberRepository = $this->getService('SubscriberRepository');
         $testerRepository = $this->getService('TesterRepository');
+        $logger = $this->getService('logger');
 
         $commandBus = new CommandBus();
 
         // Member Commands
-        $commandBus->register(new MemberAdd($memberRepository));
-        $commandBus->register(new MemberList($memberRepository));
-        $commandBus->register(new MemberDelete($memberRepository));
-        $commandBus->register(new MemberStatusChange($memberRepository));
-        $commandBus->register(new MemberClear($memberRepository));
+        $commandBus->register(new MemberAdd($logger, $memberRepository));
+        $commandBus->register(new MemberList($logger, $memberRepository));
+        $commandBus->register(new MemberDelete($logger, $memberRepository));
+        $commandBus->register(new MemberStatusChange($logger, $memberRepository));
+        $commandBus->register(new MemberClear($logger, $memberRepository));
 
         // Subscriber Commands
-        $commandBus->register(new SubscriberAdd($subscriberRepository));
-        $commandBus->register(new SubscriberList($subscriberRepository));
-        $commandBus->register(new SubscriberDelete($subscriberRepository));
-        $commandBus->register(new SubscriberStatusChange($subscriberRepository));
-        $commandBus->register(new SubscriberClear($subscriberRepository));
+        $commandBus->register(new SubscriberAdd($logger, $subscriberRepository));
+        $commandBus->register(new SubscriberList($logger, $subscriberRepository));
+        $commandBus->register(new SubscriberDelete($logger, $subscriberRepository));
+        $commandBus->register(new SubscriberStatusChange($logger, $subscriberRepository));
+        $commandBus->register(new SubscriberClear($logger, $subscriberRepository));
 
         // Tester Commands
-        $commandBus->register(new TesterCurrent($testerRepository));
-        $commandBus->register(new TesterClear($testerRepository));
-        $commandBus->register(new TesterSwitch($testerRepository, $memberRepository, $subscriberRepository));
+        $commandBus->register(new TesterCurrent($logger, $testerRepository));
+        $commandBus->register(new TesterClear($logger, $testerRepository));
+        $commandBus->register(new TesterSwitch($logger, $testerRepository, $memberRepository, $subscriberRepository));
 
         $this->commandBus = $commandBus;
     }

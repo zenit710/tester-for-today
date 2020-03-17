@@ -5,6 +5,7 @@ namespace Acme\Command\Subscriber;
 use Acme\Command\AbstractCommand;
 use Acme\Command\MissingArgumentException;
 use Acme\Entity\Subscriber\SubscriberRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class SubscriberStatusChange
@@ -29,10 +30,12 @@ class SubscriberStatusChange extends AbstractCommand
 
     /**
      * SubscriberStatusChange constructor.
+     * @param LoggerInterface $logger
      * @param SubscriberRepositoryInterface $repository
      */
-    public function __construct(SubscriberRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, SubscriberRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 
@@ -62,6 +65,8 @@ class SubscriberStatusChange extends AbstractCommand
                 ? $this->repository->deactivate($this->commandArgs[self::ARG_ID])
                 : $this->repository->activate($this->commandArgs[self::ARG_ID]);
         }
+
+        $this->logger->info('Subscriber id: ' . $this->getArg(self::ARG_ID) . ' status changed');
 
         return self::SUCCESS_MESSAGE;
     }

@@ -6,6 +6,7 @@ use Acme\Command\AbstractCommand;
 use Acme\Entity\Member\MemberDTO;
 use Acme\Entity\Member\MemberFilter;
 use Acme\Entity\Member\MemberRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MemberList
@@ -24,10 +25,12 @@ class MemberList extends AbstractCommand
 
     /**
      * MemberList constructor.
+     * @param LoggerInterface $logger
      * @param MemberRepositoryInterface $repository
      */
-    public function __construct(MemberRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, MemberRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 

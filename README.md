@@ -17,7 +17,6 @@ composer install
 
 ### TODO
 
-* add logging to commands using PSR Log Interface
 * add list of possible commands
 * throw exceptions in repositories when no results
 * write unit tests

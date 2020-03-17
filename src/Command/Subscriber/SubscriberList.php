@@ -6,6 +6,7 @@ use Acme\Command\AbstractCommand;
 use Acme\Entity\Subscriber\SubscriberDTO;
 use Acme\Entity\Subscriber\SubscriberFilter;
 use Acme\Entity\Subscriber\SubscriberRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class SubscriberList
@@ -24,10 +25,12 @@ class SubscriberList extends AbstractCommand
 
     /**
      * SubscriberList constructor.
+     * @param LoggerInterface $logger
      * @param SubscriberRepositoryInterface $repository
      */
-    public function __construct(SubscriberRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, SubscriberRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 

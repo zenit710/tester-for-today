@@ -4,6 +4,7 @@ namespace Acme\Command\Subscriber;
 
 use Acme\Command\AbstractCommand;
 use Acme\Entity\Subscriber\SubscriberRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class SubscriberClear
@@ -21,10 +22,12 @@ class SubscriberClear extends AbstractCommand
 
     /**
      * SubscriberClear constructor.
+     * @param LoggerInterface $logger
      * @param SubscriberRepositoryInterface $repository
      */
-    public function __construct(SubscriberRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, SubscriberRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 
@@ -40,6 +43,7 @@ class SubscriberClear extends AbstractCommand
         }
 
         $this->repository->clear();
+        $this->logger->info('Subscriber list cleared');
 
         return self::SUCCESS_MESSAGE;
     }

@@ -12,6 +12,7 @@ use Acme\Entity\Member\MemberRepositoryInterface;
 use Acme\Entity\Tester\TesterDTO;
 use Acme\Entity\Tester\TesterRepositoryInterface;
 use Acme\Mail;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class SwitchTester
@@ -40,17 +41,20 @@ class TesterSwitch extends AbstractCommand
     private $subscriberRepository;
 
     /**
-     * SwitchTester constructor.
+     * TesterSwitch constructor.
+     * @param LoggerInterface $logger
      * @param TesterRepositoryInterface $testerRepository
      * @param MemberRepositoryInterface $memberRepository
      * @param SubscriberRepositoryInterface $subscriberRepository
      */
     public function __construct(
+        LoggerInterface $logger,
         TesterRepositoryInterface $testerRepository,
         MemberRepositoryInterface $memberRepository,
         SubscriberRepositoryInterface $subscriberRepository
     )
     {
+        parent::__construct($logger);
         $this->testerRepository = $testerRepository;
         $this->memberRepository = $memberRepository;
         $this->subscriberRepository = $subscriberRepository;
@@ -78,12 +82,15 @@ class TesterSwitch extends AbstractCommand
             if (!$nextTester->active) {
                 throw new InactiveTesterException('Selected member is not active!');
             }
+
+            $this->logger->info('New tester selected manually');
         } else {
             throw new MissingArgumentException($this->help());
         }
 
         $tester->memberId = $nextTester->id;
         $this->testerRepository->add($tester);
+        $this->logger->info('Tester changed. Current tester id: ' . $nextTester->id);
 //        $this->notifySubscribers($nextTester);
 
         return self::SUCCESS_MESSAGE;

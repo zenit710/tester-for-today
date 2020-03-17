@@ -5,6 +5,7 @@ namespace Acme\Command\Member;
 use Acme\Command\AbstractCommand;
 use Acme\Command\MissingArgumentException;
 use Acme\Entity\Member\MemberRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MemberStatusChange
@@ -29,10 +30,12 @@ class MemberStatusChange extends AbstractCommand
 
     /**
      * MemberStatusChange constructor.
+     * @param LoggerInterface $logger
      * @param MemberRepositoryInterface $repository
      */
-    public function __construct(MemberRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, MemberRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 
@@ -62,6 +65,8 @@ class MemberStatusChange extends AbstractCommand
                 ? $this->repository->deactivate($this->commandArgs[self::ARG_ID])
                 : $this->repository->activate($this->commandArgs[self::ARG_ID]);
         }
+
+        $this->logger->info('Member id: ' . $this->getArg(self::ARG_ID) . ' status changed');
 
         return self::SUCCESS_MESSAGE;
     }

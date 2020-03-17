@@ -5,6 +5,7 @@ namespace Acme\Command\Tester;
 use Acme\Command\AbstractCommand;
 use Acme\Entity\NoResultException;
 use Acme\Entity\Tester\TesterRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class TesterCurrent
@@ -23,10 +24,12 @@ class TesterCurrent extends AbstractCommand
 
     /**
      * TesterCurrent constructor.
+     * @param LoggerInterface $logger
      * @param TesterRepositoryInterface $repository
      */
-    public function __construct(TesterRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, TesterRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 

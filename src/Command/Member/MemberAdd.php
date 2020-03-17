@@ -6,6 +6,7 @@ use Acme\Command\AbstractCommand;
 use Acme\Command\MissingArgumentException;
 use Acme\Entity\Member\MemberDTO;
 use Acme\Entity\Member\MemberRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MemberAdd
@@ -28,10 +29,12 @@ class MemberAdd extends AbstractCommand
 
     /**
      * MemberAdd constructor.
+     * @param LoggerInterface $logger
      * @param MemberRepositoryInterface $repository
      */
-    public function __construct(MemberRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, MemberRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 
@@ -51,9 +54,10 @@ class MemberAdd extends AbstractCommand
         }
 
         $member = new MemberDTO();
-        $member->name = $this->commandArgs[self::ARG_NAME];
+        $member->name = $this->getArg(self::ARG_NAME);
 
         $this->repository->add($member);
+        $this->logger->info('New member ' . $member->name . ' added');
 
         return self::SUCCESS_MESSAGE;
     }

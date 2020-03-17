@@ -4,6 +4,7 @@ namespace Acme\Command\Member;
 
 use Acme\Command\AbstractCommand;
 use Acme\Entity\Member\MemberRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MemberClear
@@ -21,10 +22,12 @@ class MemberClear extends AbstractCommand
 
     /**
      * MemberClear constructor.
+     * @param LoggerInterface $logger
      * @param MemberRepositoryInterface $repository
      */
-    public function __construct(MemberRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, MemberRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 
@@ -40,6 +43,7 @@ class MemberClear extends AbstractCommand
         }
 
         $this->repository->clear();
+        $this->logger->info('Members list cleared');
 
         return self::SUCCESS_MESSAGE;
     }

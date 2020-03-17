@@ -5,6 +5,7 @@ namespace Acme\Command\Member;
 use Acme\Command\AbstractCommand;
 use Acme\Command\MissingArgumentException;
 use Acme\Entity\Member\MemberRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MemberDelete
@@ -27,10 +28,12 @@ class MemberDelete extends AbstractCommand
 
     /**
      * MemberDelete constructor.
+     * @param LoggerInterface $logger
      * @param MemberRepositoryInterface $repository
      */
-    public function __construct(MemberRepositoryInterface $repository)
+    public function __construct(LoggerInterface $logger, MemberRepositoryInterface $repository)
     {
+        parent::__construct($logger);
         $this->repository = $repository;
     }
 
@@ -49,7 +52,8 @@ class MemberDelete extends AbstractCommand
             return $this->help();
         }
 
-        $this->repository->delete($this->commandArgs[self::ARG_ID]);
+        $this->repository->delete($this->getArg(self::ARG_ID));
+        $this->logger->info('Member id: ' . $this->getArg(self::ARG_ID) . ' deleted');
 
         return self::SUCCESS_MESSAGE;
     }

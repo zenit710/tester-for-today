@@ -2,6 +2,8 @@
 
 namespace Acme\Command;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * Class AbstractCommand
  * @package Acme\Command
@@ -16,6 +18,18 @@ abstract class AbstractCommand
 
     /** @var array */
     protected $commandArgs = [];
+
+    /** @var LoggerInterface */
+    protected $logger;
+
+    /**
+     * AbstractCommand constructor.
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * @param string[] $args
