@@ -25,7 +25,7 @@ interface MemberRepositoryInterface
      * @param int $id
      * @return MemberDTO
      */
-    public function getNextById(int $id): MemberDTO;
+    public function getNextActiveById(int $id): MemberDTO;
 
     /**
      * @param MemberDTO $tester

@@ -20,7 +20,7 @@ abstract class AbstractCommand
     /**
      * @param string[] $args
      * @return string
-     * @throws MissingArgumentException
+     * @throws \Exception
      */
     public abstract function run(array $args): string;
 
@@ -35,8 +35,6 @@ abstract class AbstractCommand
      */
     public function supports(string $name): bool
     {
-//        var_dump($name, $this->commandName);
-
         return $this->commandName === $name;
     }
 

@@ -8,7 +8,7 @@ use Acme\Command\Subscriber\SubscriberClear;
 use Acme\Command\Subscriber\SubscriberDelete;
 use Acme\Command\Subscriber\SubscriberList;
 use Acme\Command\Subscriber\SubscriberStatusChange;
-use Acme\Command\SwitchTester;
+use Acme\Command\Tester\TesterSwitch;
 use Acme\Command\Member\MemberAdd;
 use Acme\Command\Member\MemberClear;
 use Acme\Command\Member\MemberDelete;
@@ -141,9 +141,7 @@ class AppKernel
         // Tester Commands
         $commandBus->register(new TesterCurrent($testerRepository));
         $commandBus->register(new TesterClear($testerRepository));
-
-        // Switch
-        $commandBus->register(new SwitchTester($testerRepository, $memberRepository, $subscriberRepository));
+        $commandBus->register(new TesterSwitch($testerRepository, $memberRepository, $subscriberRepository));
 
         $this->commandBus = $commandBus;
     }

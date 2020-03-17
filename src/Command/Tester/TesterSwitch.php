@@ -1,7 +1,9 @@
 <?php
 
-namespace Acme\Command;
+namespace Acme\Command\Tester;
 
+use Acme\Command\AbstractCommand;
+use Acme\Command\MissingArgumentException;
 use Acme\Entity\NoResultException;
 use Acme\Entity\Subscriber\SubscriberRepositoryInterface;
 use Acme\Entity\Member\MemberDTO;
@@ -14,7 +16,7 @@ use Acme\Mail;
  * Class SwitchTester
  * @package Acme\Command\TestHistory
  */
-class SwitchTester extends AbstractCommand
+class TesterSwitch extends AbstractCommand
 {
     const SUCCESS_MESSAGE = 'Tester changed!' . PHP_EOL;
     const MAIL_SUBJECT = 'Tester na dziś';
@@ -25,7 +27,7 @@ class SwitchTester extends AbstractCommand
     const ARG_ID = 'id';
 
     /** @var string */
-    protected $commandName = 'switch:tester';
+    protected $commandName = 'tester:switch';
 
     /** @var TesterRepositoryInterface */
     private $testerRepository;
@@ -68,16 +70,20 @@ class SwitchTester extends AbstractCommand
 
         if ($this->hasArg(self::ARG_AUTO)) {
             $id = $this->getLastTesterId();
-            $nextTester = $this->memberRepository->getNextById($id);
+            $nextTester = $this->memberRepository->getNextActiveById($id);
         } else if ($this->hasArg(self::ARG_MANUAL) && $this->hasArg(self::ARG_ID)) {
             $nextTester = $this->memberRepository->getById($this->getArg(self::ARG_ID));
+
+            if (!$nextTester->active) {
+                throw new InactiveTesterException('Selected member is not active!');
+            }
         } else {
             throw new MissingArgumentException($this->help());
         }
 
         $tester->memberId = $nextTester->id;
         $this->testerRepository->add($tester);
-        $this->notifySubscribers($nextTester);
+//        $this->notifySubscribers($nextTester);
 
         return self::SUCCESS_MESSAGE;
     }

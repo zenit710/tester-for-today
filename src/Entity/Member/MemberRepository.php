@@ -72,12 +72,12 @@ class MemberRepository implements MemberRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getNextById(int $id): MemberDTO
+    public function getNextActiveById(int $id): MemberDTO
     {
         $memberStmt = $this->db->getConnection()->prepare('
             SELECT *
             FROM member
-            WHERE id > :id
+            WHERE id > :id AND active = 1
             LIMIT 1
         ');
         $memberStmt->bindValue(':id', $id);
