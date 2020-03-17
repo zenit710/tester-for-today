@@ -1,29 +1,29 @@
 <?php
 
-namespace Acme\Command\TestHistory;
+namespace Acme\Command\Member;
 
 use Acme\Command\AbstractCommand;
-use Acme\Entity\TestHistory\TestHistoryRepositoryInterface;
+use Acme\Entity\Member\MemberRepositoryInterface;
 
 /**
- * Class TestHistoryClear
- * @package Acme\Command\TestHistory
+ * Class MemberClear
+ * @package Acme\Command\Member
  */
-class TestHistoryClear extends AbstractCommand
+class MemberClear extends AbstractCommand
 {
-    const SUCCESS_MESSAGE = 'Test history cleared!' . PHP_EOL;
+    const SUCCESS_MESSAGE = 'All members removed!' . PHP_EOL;
 
     /** @var string */
-    protected $commandName = 'test-history:clear';
+    protected $commandName = 'member:clear';
 
-    /** @var TestHistoryRepositoryInterface */
+    /** @var MemberRepositoryInterface */
     private $repository;
 
     /**
-     * TestHistoryClear constructor.
-     * @param TestHistoryRepositoryInterface $repository
+     * MemberClear constructor.
+     * @param MemberRepositoryInterface $repository
      */
-    public function __construct(TestHistoryRepositoryInterface $repository)
+    public function __construct(MemberRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -49,7 +49,7 @@ class TestHistoryClear extends AbstractCommand
      */
     public function help(): string
     {
-        return 'Get current tester' . PHP_EOL
+        return 'Clear members' . PHP_EOL
             . PHP_EOL
             . 'Usage:' . PHP_EOL
             . $this->commandName . ' options' . PHP_EOL

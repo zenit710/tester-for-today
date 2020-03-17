@@ -4,10 +4,10 @@ namespace Acme\Command;
 
 use Acme\Entity\NoResultException;
 use Acme\Entity\Subscriber\SubscriberRepositoryInterface;
+use Acme\Entity\Member\MemberDTO;
+use Acme\Entity\Member\MemberRepositoryInterface;
 use Acme\Entity\Tester\TesterDTO;
 use Acme\Entity\Tester\TesterRepositoryInterface;
-use Acme\Entity\TestHistory\TestHistoryDTO;
-use Acme\Entity\TestHistory\TestHistoryRepositoryInterface;
 use Acme\Mail;
 
 /**
@@ -16,7 +16,7 @@ use Acme\Mail;
  */
 class SwitchTester extends AbstractCommand
 {
-    const SUCCESS_MESSAGE = 'Tester added to history!' . PHP_EOL;
+    const SUCCESS_MESSAGE = 'Tester changed!' . PHP_EOL;
     const MAIL_SUBJECT = 'Tester na dziś';
     const MESSAGE_PATTERN = 'Dzisiaj (%s) zadania testuje: %s';
 
@@ -27,29 +27,29 @@ class SwitchTester extends AbstractCommand
     /** @var string */
     protected $commandName = 'switch:tester';
 
-    /** @var TestHistoryRepositoryInterface */
-    private $repository;
-
     /** @var TesterRepositoryInterface */
     private $testerRepository;
+
+    /** @var MemberRepositoryInterface */
+    private $memberRepository;
 
     /** @var SubscriberRepositoryInterface */
     private $subscriberRepository;
 
     /**
      * SwitchTester constructor.
-     * @param TestHistoryRepositoryInterface $repository
      * @param TesterRepositoryInterface $testerRepository
+     * @param MemberRepositoryInterface $memberRepository
      * @param SubscriberRepositoryInterface $subscriberRepository
      */
     public function __construct(
-        TestHistoryRepositoryInterface $repository,
         TesterRepositoryInterface $testerRepository,
+        MemberRepositoryInterface $memberRepository,
         SubscriberRepositoryInterface $subscriberRepository
     )
     {
-        $this->repository = $repository;
         $this->testerRepository = $testerRepository;
+        $this->memberRepository = $memberRepository;
         $this->subscriberRepository = $subscriberRepository;
     }
 
@@ -64,19 +64,19 @@ class SwitchTester extends AbstractCommand
             return $this->help();
         }
 
-        $history = new TestHistoryDTO();
+        $tester = new TesterDTO();
 
         if ($this->hasArg(self::ARG_AUTO)) {
             $id = $this->getLastTesterId();
-            $nextTester = $this->testerRepository->getNextById($id);
+            $nextTester = $this->memberRepository->getNextById($id);
         } else if ($this->hasArg(self::ARG_MANUAL) && $this->hasArg(self::ARG_ID)) {
-            $nextTester = $this->testerRepository->getById($this->getArg(self::ARG_ID));
+            $nextTester = $this->memberRepository->getById($this->getArg(self::ARG_ID));
         } else {
             throw new MissingArgumentException($this->help());
         }
 
-        $history->testerId = $nextTester->id;
-        $this->repository->add($history);
+        $tester->memberId = $nextTester->id;
+        $this->testerRepository->add($tester);
         $this->notifySubscribers($nextTester);
 
         return self::SUCCESS_MESSAGE;
@@ -94,7 +94,7 @@ class SwitchTester extends AbstractCommand
             . "\t options: " . PHP_EOL
             . "\t --auto - switch tester automatically" . PHP_EOL
             . "\t --manual - switch tester manually" . PHP_EOL
-            . "\t\t --id - tester id to set as current" . PHP_EOL
+            . "\t\t --id - member id to set as current" . PHP_EOL
             . "\t --help - get help" . PHP_EOL;
     }
 
@@ -104,7 +104,7 @@ class SwitchTester extends AbstractCommand
     private function getLastTesterId(): int
     {
         try {
-            $tester = $this->repository->getLastTester();
+            $tester = $this->testerRepository->getLastTester();
 
             return $tester->id;
         } catch (NoResultException $e) {
@@ -113,9 +113,9 @@ class SwitchTester extends AbstractCommand
     }
 
     /**
-     * @param TesterDTO $newTester
+     * @param MemberDTO $newTester
      */
-    private function notifySubscribers(TesterDTO $newTester)
+    private function notifySubscribers(MemberDTO $newTester)
     {
         $subscribers = $this->subscriberRepository->getAll();
         $message = sprintf(self::MESSAGE_PATTERN, date('d-m-Y'), $newTester->name);
@@ -128,6 +128,6 @@ class SwitchTester extends AbstractCommand
             $mail->addBCC($subscriber->email);
         }
 
-        var_dump($mail->send());
+        $mail->send();
     }
 }

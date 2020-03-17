@@ -1,30 +1,30 @@
 <?php
 
-namespace Acme\Command\Tester;
+namespace Acme\Command\Member;
 
 use Acme\Command\AbstractCommand;
-use Acme\Entity\Tester\TesterDTO;
-use Acme\Entity\Tester\TesterRepositoryInterface;
+use Acme\Entity\Member\MemberDTO;
+use Acme\Entity\Member\MemberRepositoryInterface;
 
 /**
- * Class TesterList
- * @package Acme\Command\Tester
+ * Class MemberList
+ * @package Acme\Command\Member
  */
-class TesterList extends AbstractCommand
+class MemberList extends AbstractCommand
 {
-    const NO_TESTERS_MESSAGE = 'There are no testers!' . PHP_EOL;
+    const NO_MEMBERS_MESSAGE = 'There are no members!' . PHP_EOL;
 
     /** @var string */
-    protected $commandName = 'tester:list';
+    protected $commandName = 'member:list';
 
-    /** @var TesterRepositoryInterface */
+    /** @var MemberRepositoryInterface */
     private $repository;
 
     /**
-     * TesterAdd constructor.
-     * @param TesterRepositoryInterface $repository
+     * MemberList constructor.
+     * @param MemberRepositoryInterface $repository
      */
-    public function __construct(TesterRepositoryInterface $repository)
+    public function __construct(MemberRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -40,9 +40,9 @@ class TesterList extends AbstractCommand
             return $this->help();
         }
 
-        $testers = $this->repository->getAll();
+        $members = $this->repository->getAll();
 
-        return $this->castTestersArrayToString($testers);
+        return $this->castMembersArrayToString($members);
     }
 
     /**
@@ -50,7 +50,7 @@ class TesterList extends AbstractCommand
      */
     public function help(): string
     {
-        return 'Print testers list' . PHP_EOL
+        return 'Print members list' . PHP_EOL
             . PHP_EOL
             . 'Usage:' . PHP_EOL
             . $this->commandName . ' options' . PHP_EOL
@@ -59,13 +59,13 @@ class TesterList extends AbstractCommand
     }
 
     /**
-     * @param TesterDTO[] $testers
+     * @param MemberDTO[] $members
      * @return string
      */
-    private function castTestersArrayToString(array $testers): string
+    private function castMembersArrayToString(array $members): string
     {
-        if (count($testers) === 0) {
-            return self::NO_TESTERS_MESSAGE;
+        if (count($members) === 0) {
+            return self::NO_MEMBERS_MESSAGE;
         }
 
         $columnsSizes = [
@@ -74,9 +74,9 @@ class TesterList extends AbstractCommand
             'status' => 8,
         ];
 
-        foreach ($testers as $tester) {
-            $idLength = strlen(strval($tester->id));
-            $nameLength = strlen($tester->name);
+        foreach ($members as $member) {
+            $idLength = strlen(strval($member->id));
+            $nameLength = strlen($member->name);
 
             if ($idLength > $columnsSizes['id']) {
                 $columnsSizes['id'] = $idLength;
@@ -95,11 +95,11 @@ class TesterList extends AbstractCommand
             ]
         ];
 
-        foreach ($testers as $tester) {
+        foreach ($members as $member) {
             $outputArray[] = [
-                str_pad($tester->id, $columnsSizes['id']),
-                str_pad($tester->name, $columnsSizes['name']),
-                str_pad($tester->active ? 'active' : 'inactive', $columnsSizes['status'])
+                str_pad($member->id, $columnsSizes['id']),
+                str_pad($member->name, $columnsSizes['name']),
+                str_pad($member->active ? 'active' : 'inactive', $columnsSizes['status'])
             ];
         }
 

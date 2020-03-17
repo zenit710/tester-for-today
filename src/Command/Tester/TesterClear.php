@@ -11,7 +11,7 @@ use Acme\Entity\Tester\TesterRepositoryInterface;
  */
 class TesterClear extends AbstractCommand
 {
-    const SUCCESS_MESSAGE = 'All testers removed!' . PHP_EOL;
+    const SUCCESS_MESSAGE = 'Testers cleared!' . PHP_EOL;
 
     /** @var string */
     protected $commandName = 'tester:clear';
@@ -20,7 +20,7 @@ class TesterClear extends AbstractCommand
     private $repository;
 
     /**
-     * TesterAdd constructor.
+     * TesterClear constructor.
      * @param TesterRepositoryInterface $repository
      */
     public function __construct(TesterRepositoryInterface $repository)

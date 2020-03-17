@@ -1,31 +1,31 @@
 <?php
 
-namespace Acme\Command\TestHistory;
+namespace Acme\Command\Tester;
 
 use Acme\Command\AbstractCommand;
 use Acme\Entity\NoResultException;
-use Acme\Entity\TestHistory\TestHistoryRepositoryInterface;
+use Acme\Entity\Tester\TesterRepositoryInterface;
 
 /**
- * Class TestHistoryCurrent
- * @package Acme\Command\TestHistory
+ * Class TesterCurrent
+ * @package Acme\Command\Tester
  */
-class TestHistoryCurrent extends AbstractCommand
+class TesterCurrent extends AbstractCommand
 {
-    const NO_TESTER_MESSAGE = 'There is no test history!' . PHP_EOL;
+    const NO_TESTER_MESSAGE = 'There is no tester!' . PHP_EOL;
     const TESTER_MESSAGE_PATTERN = 'Current tester is: %s (id: %u)' . PHP_EOL;
 
     /** @var string */
-    protected $commandName = 'test-history:current';
+    protected $commandName = 'tester:current';
 
-    /** @var TestHistoryRepositoryInterface */
+    /** @var TesterRepositoryInterface */
     private $repository;
 
     /**
-     * TestHistoryCurrent constructor.
-     * @param TestHistoryRepositoryInterface $repository
+     * TesterCurrent constructor.
+     * @param TesterRepositoryInterface $repository
      */
-    public function __construct(TestHistoryRepositoryInterface $repository)
+    public function __construct(TesterRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }

@@ -11,11 +11,19 @@ class TesterDTO
     /** @var int */
     public $id;
 
-    /** @var string */
-    public $name;
+    /** @var int */
+    public $memberId;
 
-    /** @var bool */
-    public $active;
+    /** @var string */
+    public $date;
+
+    /**
+     * TesterDTO constructor.
+     */
+    public function __construct()
+    {
+        $this->date = date('Y-m-d');
+    }
 
     /**
      * @param array $arr
@@ -27,11 +35,11 @@ class TesterDTO
         if (!empty($arr['id'])) {
             $tester->id = $arr['id'];
         }
-        if (!empty($arr['name'])) {
-            $tester->name = $arr['name'];
+        if (!empty($arr['memberId'])) {
+            $tester->memberId = $arr['memberId'];
         }
-        if (!empty($arr['active'])) {
-            $tester->active = !!$arr['active'];
+        if (!empty($arr['date'])) {
+            $tester->date = $arr['date'];
         }
 
         return $tester;

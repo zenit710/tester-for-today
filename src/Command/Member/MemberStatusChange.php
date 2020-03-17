@@ -1,18 +1,18 @@
 <?php
 
-namespace Acme\Command\Tester;
+namespace Acme\Command\Member;
 
 use Acme\Command\AbstractCommand;
 use Acme\Command\MissingArgumentException;
-use Acme\Entity\Tester\TesterRepositoryInterface;
+use Acme\Entity\Member\MemberRepositoryInterface;
 
 /**
- * Class TesterStatusChange
- * @package Acme\Command\Tester
+ * Class MemberStatusChange
+ * @package Acme\Command\Member
  */
-class TesterStatusChange extends AbstractCommand
+class MemberStatusChange extends AbstractCommand
 {
-    const SUCCESS_MESSAGE = 'Tester status changed!' . PHP_EOL;
+    const SUCCESS_MESSAGE = 'Member status changed!' . PHP_EOL;
 
     const ARG_ID = 'id';
     const ARG_ACTIVE = 'active';
@@ -22,16 +22,16 @@ class TesterStatusChange extends AbstractCommand
     ];
 
     /** @var string */
-    protected $commandName = 'tester:status';
+    protected $commandName = 'member:status';
 
-    /** @var TesterRepositoryInterface */
+    /** @var MemberRepositoryInterface */
     private $repository;
 
     /**
-     * TesterAdd constructor.
-     * @param TesterRepositoryInterface $repository
+     * MemberStatusChange constructor.
+     * @param MemberRepositoryInterface $repository
      */
-    public function __construct(TesterRepositoryInterface $repository)
+    public function __construct(MemberRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -56,9 +56,9 @@ class TesterStatusChange extends AbstractCommand
         } else if (array_key_exists(self::ARG_INACTIVE, $this->commandArgs)) {
             $this->repository->deactivate($this->commandArgs[self::ARG_ID]);
         } else {
-            $tester = $this->repository->getById($this->commandArgs[self::ARG_ID]);
+            $member = $this->repository->getById($this->commandArgs[self::ARG_ID]);
 
-            $tester->active
+            $member->active
                 ? $this->repository->deactivate($this->commandArgs[self::ARG_ID])
                 : $this->repository->activate($this->commandArgs[self::ARG_ID]);
         }
@@ -71,14 +71,14 @@ class TesterStatusChange extends AbstractCommand
      */
     public function help(): string
     {
-        return 'Change tester status' . PHP_EOL
+        return 'Change member status' . PHP_EOL
             . PHP_EOL
             . 'Usage:' . PHP_EOL
             . $this->commandName . ' options' . PHP_EOL
             . "\t options: " . PHP_EOL
-            . "\t --id=id - set id for tester to change status (required)" . PHP_EOL
-            . "\t --active - activate user" . PHP_EOL
-            . "\t --inactive - deactivate user" . PHP_EOL
+            . "\t --id=id - set id for member to change status (required)" . PHP_EOL
+            . "\t --active - activate member" . PHP_EOL
+            . "\t --inactive - deactivate member" . PHP_EOL
             . "\t --help - get help" . PHP_EOL;
     }
 }

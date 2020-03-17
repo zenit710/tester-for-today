@@ -2,6 +2,9 @@
 
 namespace Acme\Entity\Tester;
 
+use Acme\Entity\NoResultException;
+use Acme\Entity\Member\MemberDTO;
+
 /**
  * Interface TesterRepositoryInterface
  * @package Acme\Entity\Tester
@@ -11,41 +14,15 @@ interface TesterRepositoryInterface
     public function createSchema();
 
     /**
-     * @return TesterDTO[]
+     * @return MemberDTO
+     * @throws NoResultException
      */
-    public function getAll(): array;
-
-    /**
-     * @param int $id
-     * @return TesterDTO
-     */
-    public function getById(int $id): TesterDTO;
-
-    /**
-     * @param int $id
-     * @return TesterDTO
-     */
-    public function getNextById(int $id): TesterDTO;
+    public function getLastTester(): MemberDTO;
 
     /**
      * @param TesterDTO $tester
      */
     public function add(TesterDTO $tester);
-
-    /**
-     * @param integer $id
-     */
-    public function delete(int $id);
-
-    /**
-     * @param int $id
-     */
-    public function activate(int $id);
-
-    /**
-     * @param int $id
-     */
-    public function deactivate(int $id);
 
     public function clear();
 }

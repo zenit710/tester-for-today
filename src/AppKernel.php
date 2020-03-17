@@ -9,16 +9,16 @@ use Acme\Command\Subscriber\SubscriberDelete;
 use Acme\Command\Subscriber\SubscriberList;
 use Acme\Command\Subscriber\SubscriberStatusChange;
 use Acme\Command\SwitchTester;
-use Acme\Command\Tester\TesterAdd;
+use Acme\Command\Member\MemberAdd;
+use Acme\Command\Member\MemberClear;
+use Acme\Command\Member\MemberDelete;
+use Acme\Command\Member\MemberList;
+use Acme\Command\Member\MemberStatusChange;
 use Acme\Command\Tester\TesterClear;
-use Acme\Command\Tester\TesterDelete;
-use Acme\Command\Tester\TesterList;
-use Acme\Command\Tester\TesterStatusChange;
-use Acme\Command\TestHistory\TestHistoryClear;
-use Acme\Command\TestHistory\TestHistoryCurrent;
+use Acme\Command\Tester\TesterCurrent;
 use Acme\Entity\Subscriber\SubscriberRepository;
+use Acme\Entity\Member\MemberRepository;
 use Acme\Entity\Tester\TesterRepository;
-use Acme\Entity\TestHistory\TestHistoryRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as Monolog;
 
@@ -106,9 +106,9 @@ class AppKernel
     {
         $db = $this->getService('db');
 
-        $this->registerService('TesterRepository', new TesterRepository($db));
+        $this->registerService('MemberRepository', new MemberRepository($db));
         $this->registerService('SubscriberRepository', new SubscriberRepository($db));
-        $this->registerService('TestHistoryRepository', new TestHistoryRepository($db));
+        $this->registerService('TesterRepository', new TesterRepository($db));
     }
 
     private function bootstrapMailer()
@@ -118,32 +118,32 @@ class AppKernel
 
     private function bootstrapCommandBus()
     {
-        $testerRepository = $this->getService('TesterRepository');
+        $memberRepository = $this->getService('MemberRepository');
         $subscriberRepository = $this->getService('SubscriberRepository');
-        $historyRepository = $this->getService('TestHistoryRepository');
+        $testerRepository = $this->getService('TesterRepository');
 
         $commandBus = new CommandBus();
 
-        // Tester Commands
-        $commandBus->register(new TesterAdd($testerRepository));
-        $commandBus->register(new TesterList($testerRepository));
-        $commandBus->register(new TesterDelete($testerRepository));
-        $commandBus->register(new TesterStatusChange($testerRepository));
-        $commandBus->register(new TesterClear($testerRepository));
+        // Member Commands
+        $commandBus->register(new MemberAdd($memberRepository));
+        $commandBus->register(new MemberList($memberRepository));
+        $commandBus->register(new MemberDelete($memberRepository));
+        $commandBus->register(new MemberStatusChange($memberRepository));
+        $commandBus->register(new MemberClear($memberRepository));
 
-        // SubscriberCommands
+        // Subscriber Commands
         $commandBus->register(new SubscriberAdd($subscriberRepository));
         $commandBus->register(new SubscriberList($subscriberRepository));
         $commandBus->register(new SubscriberDelete($subscriberRepository));
         $commandBus->register(new SubscriberStatusChange($subscriberRepository));
         $commandBus->register(new SubscriberClear($subscriberRepository));
 
-        // TestHistoryCommands
-        $commandBus->register(new TestHistoryCurrent($historyRepository));
-        $commandBus->register(new TestHistoryClear($historyRepository));
+        // Tester Commands
+        $commandBus->register(new TesterCurrent($testerRepository));
+        $commandBus->register(new TesterClear($testerRepository));
 
         // Switch
-        $commandBus->register(new SwitchTester($historyRepository, $testerRepository, $subscriberRepository));
+        $commandBus->register(new SwitchTester($testerRepository, $memberRepository, $subscriberRepository));
 
         $this->commandBus = $commandBus;
     }

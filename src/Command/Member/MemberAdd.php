@@ -1,19 +1,19 @@
 <?php
 
-namespace Acme\Command\Tester;
+namespace Acme\Command\Member;
 
 use Acme\Command\AbstractCommand;
 use Acme\Command\MissingArgumentException;
-use Acme\Entity\Tester\TesterDTO;
-use Acme\Entity\Tester\TesterRepositoryInterface;
+use Acme\Entity\Member\MemberDTO;
+use Acme\Entity\Member\MemberRepositoryInterface;
 
 /**
- * Class TesterAdd
- * @package Acme\Command\Tester
+ * Class MemberAdd
+ * @package Acme\Command\Member
  */
-class TesterAdd extends AbstractCommand
+class MemberAdd extends AbstractCommand
 {
-    const SUCCESS_MESSAGE = 'New tester added!' . PHP_EOL;
+    const SUCCESS_MESSAGE = 'New member added!' . PHP_EOL;
 
     const ARG_NAME = 'name';
     const REQUIRED_ARGS = [
@@ -21,16 +21,16 @@ class TesterAdd extends AbstractCommand
     ];
 
     /** @var string */
-    protected $commandName = 'tester:add';
+    protected $commandName = 'member:add';
 
-    /** @var TesterRepositoryInterface */
+    /** @var MemberRepositoryInterface */
     private $repository;
 
     /**
-     * TesterAdd constructor.
-     * @param TesterRepositoryInterface $repository
+     * MemberAdd constructor.
+     * @param MemberRepositoryInterface $repository
      */
-    public function __construct(TesterRepositoryInterface $repository)
+    public function __construct(MemberRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -50,10 +50,10 @@ class TesterAdd extends AbstractCommand
             return $this->help();
         }
 
-        $tester = new TesterDTO();
-        $tester->name = $this->commandArgs[self::ARG_NAME];
+        $member = new MemberDTO();
+        $member->name = $this->commandArgs[self::ARG_NAME];
 
-        $this->repository->add($tester);
+        $this->repository->add($member);
 
         return self::SUCCESS_MESSAGE;
     }
@@ -63,12 +63,12 @@ class TesterAdd extends AbstractCommand
      */
     public function help(): string
     {
-        return 'Add new tester' . PHP_EOL
+        return 'Add new member' . PHP_EOL
             . PHP_EOL
             . 'Usage:' . PHP_EOL
             . $this->commandName . ' options' . PHP_EOL
             . "\t options: " . PHP_EOL
-            . "\t --name=name - set name for added tester (required)" . PHP_EOL
+            . "\t --name=name - set name for added member (required)" . PHP_EOL
             . "\t --help - get help" . PHP_EOL;
     }
 }

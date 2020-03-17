@@ -1,18 +1,18 @@
 <?php
 
-namespace Acme\Command\Tester;
+namespace Acme\Command\Member;
 
 use Acme\Command\AbstractCommand;
 use Acme\Command\MissingArgumentException;
-use Acme\Entity\Tester\TesterRepositoryInterface;
+use Acme\Entity\Member\MemberRepositoryInterface;
 
 /**
- * Class TesterDelete
- * @package Acme\Command\Tester
+ * Class MemberDelete
+ * @package Acme\Command\Member
  */
-class TesterDelete extends AbstractCommand
+class MemberDelete extends AbstractCommand
 {
-    const SUCCESS_MESSAGE = 'Tester deleted!' . PHP_EOL;
+    const SUCCESS_MESSAGE = 'Member deleted!' . PHP_EOL;
 
     const ARG_ID = 'id';
     const REQUIRED_ARGS = [
@@ -20,16 +20,16 @@ class TesterDelete extends AbstractCommand
     ];
 
     /** @var string */
-    protected $commandName = 'tester:delete';
+    protected $commandName = 'member:delete';
 
-    /** @var TesterRepositoryInterface */
+    /** @var MemberRepositoryInterface */
     private $repository;
 
     /**
-     * TesterAdd constructor.
-     * @param TesterRepositoryInterface $repository
+     * MemberDelete constructor.
+     * @param MemberRepositoryInterface $repository
      */
-    public function __construct(TesterRepositoryInterface $repository)
+    public function __construct(MemberRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -59,12 +59,12 @@ class TesterDelete extends AbstractCommand
      */
     public function help(): string
     {
-        return 'Delete tester' . PHP_EOL
+        return 'Delete member' . PHP_EOL
             . PHP_EOL
             . 'Usage:' . PHP_EOL
             . $this->commandName . ' options' . PHP_EOL
             . "\t options: " . PHP_EOL
-            . "\t --id=id - set id for tester to delete (required)" . PHP_EOL
+            . "\t --id=id - set id for member to delete (required)" . PHP_EOL
             . "\t --help - get help" . PHP_EOL;
     }
 }

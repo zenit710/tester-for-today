@@ -3,6 +3,8 @@
 namespace Acme\Entity\Tester;
 
 use Acme\DbConnection;
+use Acme\Entity\NoResultException;
+use Acme\Entity\Member\MemberDTO;
 
 /**
  * Class TesterRepository
@@ -31,8 +33,10 @@ class TesterRepository implements TesterRepositoryInterface
         $this->db->getConnection()->exec('
             CREATE TABLE IF NOT EXISTS tester (
                 id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL UNIQUE,
-                active INTEGER NOT NULL DEFAULT 1
+                member_id INTEGER NOT NULL,
+                date DATE NOT NULL,
+                FOREIGN KEY (member_id)
+                    REFERENCES member (id)
             )
         ');
     }
@@ -40,58 +44,20 @@ class TesterRepository implements TesterRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getAll(): array
+    public function getLastTester(): MemberDTO
     {
-        $testers = $this->db->getConnection()->query('
-            SELECT * FROM tester
-        ');
-
-        $DTOs = [];
-        while ($tester = $testers->fetchArray(SQLITE3_ASSOC)) {
-            $DTOs[] = TesterDTO::fromArray($tester);
-        }
-
-        return $DTOs;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getById(int $id): TesterDTO
-    {
-        $testerStmt = $this->db->getConnection()->prepare('
-            SELECT * FROM tester WHERE id = :id
-        ');
-        $testerStmt->bindValue(':id', $id);
-
-        $tester = $testerStmt->execute()->fetchArray(SQLITE3_ASSOC);
-
-        return TesterDTO::fromArray($tester);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getNextById(int $id): TesterDTO
-    {
-        $testerStmt = $this->db->getConnection()->prepare('
+        $last = $this->db->getConnection()->querySingle('
             SELECT *
             FROM tester
-            WHERE id > :id
-            LIMIT 1
-        ');
-        $testerStmt->bindValue(':id', $id);
+            JOIN member ON member_id = member.id
+            ORDER BY member.id DESC
+        ', true);
 
-        $tester = $testerStmt->execute()->fetchArray(SQLITE3_ASSOC);
-
-        if (empty($tester)) {
-            $tester = $this->db->getConnection()->querySingle('
-                SELECT *
-                FROM tester
-            ', true);
+        if (empty($last)) {
+            throw new NoResultException('Cannot fetch last tester.');
         }
 
-        return TesterDTO::fromArray($tester);
+        return MemberDTO::fromArray($last);
     }
 
     /**
@@ -100,54 +66,11 @@ class TesterRepository implements TesterRepositoryInterface
     public function add(TesterDTO $tester)
     {
         $testerStmt = $this->db->getConnection()->prepare('
-            INSERT INTO tester (name)
-            VALUES (:name)
+            INSERT INTO tester (member_id, date)
+            VALUES (:id, :date)
         ');
-        $testerStmt->bindValue(':name', $tester->name);
-
-        $testerStmt->execute();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function delete(int $id)
-    {
-        $testerStmt = $this->db->getConnection()->prepare('
-            DELETE FROM tester
-            WHERE id = :id
-        ');
-        $testerStmt->bindValue(':id', $id);
-
-        $testerStmt->execute();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function activate(int $id)
-    {
-        $testerStmt = $this->db->getConnection()->prepare('
-            UPDATE tester 
-            SET active = 1
-            WHERE id = :id
-        ');
-        $testerStmt->bindValue(':id', $id);
-
-        $testerStmt->execute();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function deactivate(int $id)
-    {
-        $testerStmt = $this->db->getConnection()->prepare('
-            UPDATE tester 
-            SET active = 0
-            WHERE id = :id
-        ');
-        $testerStmt->bindValue(':id', $id);
+        $testerStmt->bindValue(':id', $tester->memberId);
+        $testerStmt->bindValue(':date', $tester->date);
 
         $testerStmt->execute();
     }
