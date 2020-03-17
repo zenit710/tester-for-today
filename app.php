@@ -7,25 +7,29 @@ require __DIR__ . '/vendor/autoload.php';
 $kernel = \Acme\AppKernel::getInstance();
 $kernel->bootstrap();
 
-if ($argc < 2) {
-    echo $kernel->getCommandBus()->availableCommands();
-    exit;
-}
+//if ($argc < 2) {
+//    echo $kernel->getCommandBus()->availableCommands();
+//    exit;
+//}
+//
+//echo $kernel->handle($argv[1], $argv);
+//
+//// tests
+//echo $kernel->handle('member:clear', []);
+//echo $kernel->handle('member:add', ['--name=Janusz']);
 
-echo $kernel->handle($argv[1], $argv);
+/** @var \Acme\Entity\Member\MemberRepositoryInterface $memberRepo */
+//$memberRepo = $kernel->getService('MemberRepository');
+//$memberRepo->getById(2);
 
-// tests
-echo $kernel->handle('member:clear', []);
-echo $kernel->handle('member:add', ['--name=Janusz']);
-
-echo $kernel->handle('tester:clear', []);
-echo $kernel->handle('tester:switch', ['--auto']);
-echo $kernel->handle('tester:switch', ['--manual', '--id=1']);
-
-echo $kernel->handle('member:status', ['--id=1']);
+//echo $kernel->handle('tester:clear', []);
+//echo $kernel->handle('tester:switch', ['--auto']);
+//echo $kernel->handle('tester:switch', ['--manual', '--id=1']);
+//
+//echo $kernel->handle('member:status', ['--id=1']);
 echo $kernel->handle('member:delete', ['--id=1']);
-
-echo $kernel->handle('subscriber:clear', []);
-echo $kernel->handle('subscriber:add', ['--email=kamil_malek@tvn.pl']);
-echo $kernel->handle('subscriber:status', ['--id=1']);
-echo $kernel->handle('subscriber:delete', ['--id=1']);
+//
+//echo $kernel->handle('subscriber:clear', []);
+//echo $kernel->handle('subscriber:add', ['--email=kamil_malek@tvn.pl']);
+//echo $kernel->handle('subscriber:status', ['--id=1']);
+//echo $kernel->handle('subscriber:delete', ['--id=1']);

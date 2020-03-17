@@ -2,6 +2,10 @@
 
 namespace Acme\Entity\Member;
 
+use Acme\Entity\NoResultException;
+use Acme\Entity\NothingToDeleteException;
+use Acme\Entity\NothingToUpdateException;
+
 /**
  * Interface MemberRepositoryInterface
  * @package Acme\Entity\Member
@@ -19,12 +23,14 @@ interface MemberRepositoryInterface
     /**
      * @param int $id
      * @return MemberDTO
+     * @throws NoResultException
      */
     public function getById(int $id): MemberDTO;
 
     /**
      * @param int $id
      * @return MemberDTO
+     * @throws NoResultException
      */
     public function getNextActiveById(int $id): MemberDTO;
 
@@ -35,16 +41,19 @@ interface MemberRepositoryInterface
 
     /**
      * @param integer $id
+     * @throws NothingToDeleteException
      */
     public function delete(int $id);
 
     /**
      * @param int $id
+     * @throws NothingToUpdateException
      */
     public function activate(int $id);
 
     /**
      * @param int $id
+     * @throws NothingToUpdateException
      */
     public function deactivate(int $id);
 

@@ -3,6 +3,9 @@
 namespace Acme\Entity\Member;
 
 use Acme\DbConnection;
+use Acme\Entity\NoResultException;
+use Acme\Entity\NothingToDeleteException;
+use Acme\Entity\NothingToUpdateException;
 
 /**
  * Class MemberRepository
@@ -70,6 +73,10 @@ class MemberRepository implements MemberRepositoryInterface
 
         $member = $memberStmt->execute()->fetchArray(SQLITE3_ASSOC);
 
+        if (empty($member)) {
+            throw new NoResultException('Cannot find member id: ' . $id);
+        }
+
         return MemberDTO::fromArray($member);
     }
 
@@ -93,6 +100,10 @@ class MemberRepository implements MemberRepositoryInterface
                 SELECT *
                 FROM member
             ', true);
+        }
+
+        if (empty($member)) {
+            throw new NoResultException('Cannot find active member');
         }
 
         return MemberDTO::fromArray($member);
@@ -124,6 +135,10 @@ class MemberRepository implements MemberRepositoryInterface
         $memberStmt->bindValue(':id', $id);
 
         $memberStmt->execute();
+
+        if ($this->db->getConnection()->changes() == 0) {
+            throw new NothingToDeleteException('Member id: ' . $id . ' not exists');
+        }
     }
 
     /**
@@ -139,6 +154,10 @@ class MemberRepository implements MemberRepositoryInterface
         $memberStmt->bindValue(':id', $id);
 
         $memberStmt->execute();
+
+        if ($this->db->getConnection()->changes() == 0) {
+            throw new NothingToUpdateException('Member id: ' . $id . ' not exists');
+        }
     }
 
     /**
@@ -154,6 +173,10 @@ class MemberRepository implements MemberRepositoryInterface
         $memberStmt->bindValue(':id', $id);
 
         $memberStmt->execute();
+
+        if ($this->db->getConnection()->changes() == 0) {
+            throw new NothingToUpdateException('Member id: ' . $id . ' not exists');
+        }
     }
 
     /**

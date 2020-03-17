@@ -2,6 +2,10 @@
 
 namespace Acme\Entity\Subscriber;
 
+use Acme\Entity\NoResultException;
+use Acme\Entity\NothingToDeleteException;
+use Acme\Entity\NothingToUpdateException;
+
 /**
  * Interface SubscriberRepositoryInterface
  * @package Acme\Entity\Subscriber
@@ -19,6 +23,7 @@ interface SubscriberRepositoryInterface
     /**
      * @param int $id
      * @return SubscriberDTO
+     * @throws NoResultException
      */
     public function getById(int $id): SubscriberDTO;
 
@@ -29,16 +34,19 @@ interface SubscriberRepositoryInterface
 
     /**
      * @param int $id
+     * @throws NothingToDeleteException
      */
     public function delete(int $id);
 
     /**
      * @param int $id
+     * @throws NothingToUpdateException
      */
     public function activate(int $id);
 
     /**
      * @param int $id
+     * @throws NothingToUpdateException
      */
     public function deactivate(int $id);
 

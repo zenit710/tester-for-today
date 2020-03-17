@@ -21,6 +21,7 @@ class DbConnection
     public function __construct()
     {
         $this->connection = new SQLite3(self::DB_FILE);
+        $this->connection->enableExceptions(true);
     }
 
     public function getConnection() {

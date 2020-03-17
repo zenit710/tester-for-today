@@ -17,7 +17,6 @@ composer install
 
 ### TODO
 
-* throw exceptions in repositories when no results
 * write unit tests
 * add helper for pretty console printing
 * __uncomment notification send in TesterSwitch command!__

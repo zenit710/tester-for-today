@@ -3,6 +3,9 @@
 namespace Acme\Entity\Subscriber;
 
 use Acme\DbConnection;
+use Acme\Entity\NoResultException;
+use Acme\Entity\NothingToDeleteException;
+use Acme\Entity\NothingToUpdateException;
 
 /**
  * Class SubscriberRepository
@@ -72,6 +75,10 @@ class SubscriberRepository implements SubscriberRepositoryInterface
 
         $subscriber = $subscriberStmt->execute()->fetchArray(SQLITE3_ASSOC);
 
+        if (empty($subscriber)) {
+            throw new NoResultException('Cannot find active member');
+        }
+
         return SubscriberDTO::fromArray($subscriber);
     }
 
@@ -101,6 +108,10 @@ class SubscriberRepository implements SubscriberRepositoryInterface
         $subscriberStmt->bindValue(':id', $id);
 
         $subscriberStmt->execute();
+
+        if ($this->db->getConnection()->changes() == 0) {
+            throw new NothingToDeleteException('Subscriber id: ' . $id . ' not exists');
+        }
     }
 
     /**
@@ -116,6 +127,10 @@ class SubscriberRepository implements SubscriberRepositoryInterface
         $subscriberStmt->bindValue(':id', $id);
 
         $subscriberStmt->execute();
+
+        if ($this->db->getConnection()->changes() == 0) {
+            throw new NothingToUpdateException('Subscriber id: ' . $id . ' not exists');
+        }
     }
 
     /**
@@ -131,6 +146,10 @@ class SubscriberRepository implements SubscriberRepositoryInterface
         $subscriberStmt->bindValue(':id', $id);
 
         $subscriberStmt->execute();
+
+        if ($this->db->getConnection()->changes() == 0) {
+            throw new NothingToUpdateException('Subscriber id: ' . $id . ' not exists');
+        }
     }
 
     /**

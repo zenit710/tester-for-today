@@ -132,7 +132,7 @@ class AppKernel
         $testerRepository = $this->getService('TesterRepository');
         $logger = $this->getService('logger');
 
-        $commandBus = new CommandBus();
+        $commandBus = new CommandBus($logger);
 
         // Member Commands
         $commandBus->register(new MemberAdd($logger, $memberRepository));

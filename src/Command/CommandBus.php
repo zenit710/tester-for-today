@@ -2,6 +2,8 @@
 
 namespace Acme\Command;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * Class CommandBus
  * @package Acme\Command
@@ -10,6 +12,18 @@ class CommandBus
 {
     /** @var AbstractCommand[] */
     private $commands = [];
+
+    /** @var LoggerInterface */
+    private $logger;
+
+    /**
+     * CommandBus constructor.
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * @param AbstractCommand $command
@@ -37,7 +51,9 @@ class CommandBus
                 try {
                     return $command->run($args);
                 } catch (\Exception $e) {
-                    return $e->getMessage();
+                    $this->logger->error($e->getMessage(), $e->getTrace());
+
+                    return $e->getMessage() . PHP_EOL;
                 }
             }
         }
