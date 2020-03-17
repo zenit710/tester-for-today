@@ -53,6 +53,14 @@ abstract class AbstractCommand
     }
 
     /**
+     * @return string
+     */
+    public function getCommandName(): string
+    {
+        return $this->commandName;
+    }
+
+    /**
      * @param string[] $args
      */
     protected function mapArgs(array $args)

@@ -42,6 +42,24 @@ class CommandBus
             }
         }
 
-        return "There is no such command!";
+        return $this->availableCommands();
+    }
+
+    /**
+     * @return string
+     */
+    public function availableCommands(): string
+    {
+        $output = 'Usage: ' . PHP_EOL
+            . 'php app.php command [option_1] [option_2]...' . PHP_EOL . PHP_EOL
+            . 'Available commands: ' . PHP_EOL;
+
+        foreach ($this->commands as $command) {
+            $output .= "\t" . $command->getCommandName() . PHP_EOL;
+        }
+
+        $output .= PHP_EOL . 'Run desired command with --help to get more details' . PHP_EOL;
+
+        return $output;
     }
 }

@@ -7,38 +7,25 @@ require __DIR__ . '/vendor/autoload.php';
 $kernel = \Acme\AppKernel::getInstance();
 $kernel->bootstrap();
 
-$kernel->handle($argv[1], $argv);
+if ($argc < 2) {
+    echo $kernel->getCommandBus()->availableCommands();
+    exit;
+}
 
-//$kernel->handle('member:clear', []);
-//$kernel->handle('subscriber:clear', []);
-//$kernel->handle('subscriber:add', ['--email=kamil_malek@tvn.pl']);
-//$kernel->handle('member:add', ['--name=Janusz']);
-//$kernel->handle('member:add', ['--name=Bonaventura']);
-//$kernel->handle('member:status', ['--id=1']);
-//$kernel->handle('member:list', []);
-//$kernel->handle('tester:clear', []);
-//$kernel->handle('tester:switch', ['--auto']);
-//$kernel->handle('tester:current', []);
-//$kernel->handle('tester:switch', ['--manual', '--id=2']);
-//$kernel->handle('tester:current', []);
-//$kernel->handle('tester:switch', ['--manual', '--id=1']);
-//$kernel->handle('tester:current', []);
-//$kernel->handle('switch:tester', ['--auto']);
-//$kernel->handle('test-history:current', []);
-//$kernel->handle('switch:tester', ['--auto']);
-//$kernel->handle('test-history:current', []);
+echo $kernel->handle($argv[1], $argv);
 
-$kernel->handle('member:clear', []);
-$kernel->handle('member:add', ['--name=Janusz']);
+// tests
+echo $kernel->handle('member:clear', []);
+echo $kernel->handle('member:add', ['--name=Janusz']);
 
-$kernel->handle('tester:clear', []);
-$kernel->handle('tester:switch', ['--auto']);
-$kernel->handle('tester:switch', ['--manual', '--id=1']);
+echo $kernel->handle('tester:clear', []);
+echo $kernel->handle('tester:switch', ['--auto']);
+echo $kernel->handle('tester:switch', ['--manual', '--id=1']);
 
-$kernel->handle('member:status', ['--id=1']);
-$kernel->handle('member:delete', ['--id=1']);
+echo $kernel->handle('member:status', ['--id=1']);
+echo $kernel->handle('member:delete', ['--id=1']);
 
-$kernel->handle('subscriber:clear', []);
-$kernel->handle('subscriber:add', ['--email=kamil_malek@tvn.pl']);
-$kernel->handle('subscriber:status', ['--id=1']);
-$kernel->handle('subscriber:delete', ['--id=1']);
+echo $kernel->handle('subscriber:clear', []);
+echo $kernel->handle('subscriber:add', ['--email=kamil_malek@tvn.pl']);
+echo $kernel->handle('subscriber:status', ['--id=1']);
+echo $kernel->handle('subscriber:delete', ['--id=1']);

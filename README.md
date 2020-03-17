@@ -17,7 +17,6 @@ composer install
 
 ### TODO
 
-* add list of possible commands
 * throw exceptions in repositories when no results
 * write unit tests
 * add helper for pretty console printing

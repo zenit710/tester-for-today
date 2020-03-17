@@ -83,10 +83,19 @@ class AppKernel
     /**
      * @param string $command
      * @param array $args
+     * @return string
      */
-    public function handle(string $command, array $args)
+    public function handle(string $command, array $args): string
     {
-        echo $this->commandBus->handle($command, $args);
+        return $this->commandBus->handle($command, $args);
+    }
+
+    /**
+     * @return CommandBus|null
+     */
+    public function getCommandBus()
+    {
+        return $this->commandBus;
     }
 
     private function bootstrapLogger()
