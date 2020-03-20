@@ -23,21 +23,6 @@ class SubscriberRepository implements SubscriberRepositoryInterface
     public function __construct(DbConnection $dbConnection)
     {
         $this->db = $dbConnection;
-        $this->createSchema();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createSchema()
-    {
-        $this->db->getConnection()->exec('
-            CREATE TABLE IF NOT EXISTS subscriber (
-                id INTEGER PRIMARY KEY,
-                email TEXT NOT NULL UNIQUE,
-                active INTEGER NOT NULL DEFAULT 1
-            )
-        ');
     }
 
     /**

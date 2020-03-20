@@ -22,23 +22,6 @@ class TesterRepository implements TesterRepositoryInterface
     public function __construct(DbConnection $dbConnection)
     {
         $this->db = $dbConnection;
-        $this->createSchema();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createSchema()
-    {
-        $this->db->getConnection()->exec('
-            CREATE TABLE IF NOT EXISTS tester (
-                id INTEGER PRIMARY KEY,
-                member_id INTEGER NOT NULL,
-                date DATE NOT NULL,
-                FOREIGN KEY (member_id)
-                    REFERENCES member (id)
-            )
-        ');
     }
 
     /**

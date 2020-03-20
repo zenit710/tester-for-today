@@ -17,6 +17,7 @@ composer install
 
 ### TODO
 
+* write test for abstract migration / migration command!
 * add absence table to avoid absent testers
 * move db location, .data dir and mail credentials to .env
 * write unit tests

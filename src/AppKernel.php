@@ -3,6 +3,7 @@
 namespace Acme;
 
 use Acme\Command\CommandBus;
+use Acme\Command\Migration\MigrationRun;
 use Acme\Command\Subscriber\SubscriberAdd;
 use Acme\Command\Subscriber\SubscriberClear;
 use Acme\Command\Subscriber\SubscriberDelete;
@@ -131,6 +132,7 @@ class AppKernel
         $subscriberRepository = $this->getService('SubscriberRepository');
         $testerRepository = $this->getService('TesterRepository');
         $logger = $this->getService('logger');
+        $db = $this->getService('db');
 
         $commandBus = new CommandBus($logger);
 
@@ -152,6 +154,9 @@ class AppKernel
         $commandBus->register(new TesterCurrent($logger, $testerRepository));
         $commandBus->register(new TesterClear($logger, $testerRepository));
         $commandBus->register(new TesterSwitch($logger, $testerRepository, $memberRepository, $subscriberRepository));
+
+        // Migration Commands
+        $commandBus->register(new MigrationRun($logger, $db));
 
         $this->commandBus = $commandBus;
     }

@@ -12,8 +12,6 @@ use Acme\Entity\NothingToUpdateException;
  */
 interface SubscriberRepositoryInterface
 {
-    public function createSchema();
-
     /**
      * @param SubscriberFilter $filter
      * @return SubscriberDTO[]

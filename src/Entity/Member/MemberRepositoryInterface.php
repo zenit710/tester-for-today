@@ -12,8 +12,6 @@ use Acme\Entity\NothingToUpdateException;
  */
 interface MemberRepositoryInterface
 {
-    public function createSchema();
-
     /**
      * @param MemberFilter|null $filter
      * @return MemberDTO[]

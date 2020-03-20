@@ -11,8 +11,6 @@ use Acme\Entity\Member\MemberDTO;
  */
 interface TesterRepositoryInterface
 {
-    public function createSchema();
-
     /**
      * @return MemberDTO
      * @throws NoResultException

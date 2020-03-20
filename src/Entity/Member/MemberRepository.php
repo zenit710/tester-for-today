@@ -23,21 +23,6 @@ class MemberRepository implements MemberRepositoryInterface
     public function __construct(DbConnection $dbConnection)
     {
         $this->db = $dbConnection;
-        $this->createSchema();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createSchema()
-    {
-        $this->db->getConnection()->exec('
-            CREATE TABLE IF NOT EXISTS member (
-                id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL UNIQUE,
-                active INTEGER NOT NULL DEFAULT 1
-            )
-        ');
     }
 
     /**
