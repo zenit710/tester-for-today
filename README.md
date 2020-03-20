@@ -17,6 +17,7 @@ composer install
 
 ### TODO
 
+* add absence table to avoid absent testers
 * move db location, .data dir and mail credentials to .env
 * write unit tests
 * add helper for pretty console printing
