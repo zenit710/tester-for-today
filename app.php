@@ -4,6 +4,9 @@ define('ROOTPATH', __DIR__);
 
 require __DIR__ . '/vendor/autoload.php';
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 $kernel = \Acme\AppKernel::getInstance();
 $kernel->bootstrap();
 

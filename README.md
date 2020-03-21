@@ -17,7 +17,7 @@ composer install
 
 ### TODO
 
-* move db location, .data dir and mail credentials to .env
+* move mail credentials to .env
 * add absence table to avoid absent testers
 * make interfaces for injected classes
 * write unit tests

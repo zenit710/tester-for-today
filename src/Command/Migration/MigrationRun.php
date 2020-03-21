@@ -70,7 +70,7 @@ class MigrationRun extends AbstractCommand
             $migrationClassNames = $this->classDiscover->getAllByPattern(self::MIGRATION_FILE_PATTERN);
             $migrations = $this->instantiateMigrationsArray($migrationClassNames);
             $migrationsCount = count($migrations);
-            $this->logger->info('Checking ' . $migrationsCount . ' migrations.');
+            $this->logger->info('Checking migrations: ' . $migrationsCount);
 
             $migrationState = $this->handleMigrations($migrations);
         }
@@ -159,8 +159,10 @@ class MigrationRun extends AbstractCommand
             try {
                 if ($this->isRevert) {
                     $migration->revert();
+                    $this->logger->info($migration->getName() . ' reverted');
                 } else {
                     $migration->apply();
+                    $this->logger->info($migration->getName() . ' applied');
                 }
 
                 $state->addSuccessful($migration);
