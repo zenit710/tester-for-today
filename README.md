@@ -22,5 +22,7 @@ composer install
 * make interfaces for injected classes
 * write unit tests
 * add helper for pretty console printing
+* move from Sqlite lib to PDO lib
+* create instantiator for AppKernel services dependencies
 * split src directories to packages
 * __uncomment notification send in TesterSwitch command!__
