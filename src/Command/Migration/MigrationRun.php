@@ -2,7 +2,9 @@
 
 namespace Acme\Command\Migration;
 
+use Acme\ClassDiscover;
 use Acme\Command\AbstractCommand;
+use Acme\Command\Migration\Helper\MigrationState;
 use Acme\DbConnection;
 use Acme\Migration\AlreadyMigratedException;
 use Acme\Migration\Migration;
@@ -16,11 +18,9 @@ use Psr\Log\LoggerInterface;
  */
 class MigrationRun extends AbstractCommand
 {
-    const SUCCESS_MESSAGE = 'Migration handled!' . PHP_EOL;
+    const BASE_MIGRATION_CLASS = 'Acme\\Migration\\Migration';
     const MIGRATION_CLASS_PREFIX =  '\\Acme\\Migration\\Migrations\\';
     const MIGRATION_FILE_PATTERN = ROOTPATH . '/src/Migration/Migrations/*.php';
-    const OPERATION_REVERT = 'revert';
-    const OPERATION_APPLY = 'apply';
     const ARG_REVERT = 'revert';
     const ARG_NAME = 'name';
 
@@ -30,15 +30,23 @@ class MigrationRun extends AbstractCommand
     /** @var DbConnection */
     private $db;
 
+    /** @var ClassDiscover */
+    private $classDiscover;
+
+    /** @var bool */
+    private $isRevert = false;
+
     /**
      * MigrationRun constructor.
      * @param LoggerInterface $logger
      * @param DbConnection $db
+     * @param ClassDiscover $classDiscover
      */
-    public function __construct(LoggerInterface $logger, DbConnection $db)
+    public function __construct(LoggerInterface $logger, DbConnection $db, ClassDiscover $classDiscover)
     {
         parent::__construct($logger);
         $this->db = $db;
+        $this->classDiscover = $classDiscover;
 
         $this->createMigrationsTableSchema();
     }
@@ -54,38 +62,20 @@ class MigrationRun extends AbstractCommand
             return $this->help();
         }
 
-        $operation = $this->hasArg(self::ARG_REVERT) ? 'revert' : 'apply';
+        $this->isRevert = $this->hasArg(self::ARG_REVERT);
 
         if ($this->hasArg(self::ARG_NAME)) {
-            $this->handleMigration($this->getArg(self::ARG_NAME), $operation);
+            $migrationState = $this->handleSingleMigration($this->getArg(self::ARG_NAME));
         } else {
-            $migrations = $this->getAllMigrations();
+            $migrationClassNames = $this->classDiscover->getAllByPattern(self::MIGRATION_FILE_PATTERN);
+            $migrations = $this->instantiateMigrationsArray($migrationClassNames);
             $migrationsCount = count($migrations);
-            $results = [];
+            $this->logger->info('Checking ' . $migrationsCount . ' migrations.');
 
-            foreach ($migrations as $migration) {
-                try {
-                    $results[] = $this->handleMigration($migration, $operation);
-                } catch (NotMigratedException $e) { // if not migrated yet it's ok
-                    $results[] = false;
-                } catch (AlreadyMigratedException $e) { // if already migrated it's ok
-                    $results[] = false;
-                }
-            }
-
-            // revert all migrations if sth went wrong
-            if (self::OPERATION_APPLY == $operation && in_array(false, $results)) {
-                $this->logger->error('Migration failed. Reverting successful migrations.');
-
-                for ($i = 0; $i < $migrationsCount; $i++) {
-                    if ($results[$i]) {
-                        $this->handleMigration($migrations[$i], self::OPERATION_REVERT);
-                    }
-                }
-            }
+            $migrationState = $this->handleMigrations($migrations);
         }
 
-        return self::SUCCESS_MESSAGE;
+        return $migrationState;
     }
 
     private function createMigrationsTableSchema()
@@ -101,43 +91,32 @@ class MigrationRun extends AbstractCommand
 
     /**
      * @param string $name
-     * @param string $operation
-     * @return bool
-     * @throws AlreadyMigratedException
-     * @throws NotMigratedException
+     * @return MigrationState
      */
-    private function handleMigration(string $name, string $operation): bool
+    private function handleSingleMigration(string $name): MigrationState
     {
-        $class = self::MIGRATION_CLASS_PREFIX . $name;
+        $migration = $this->instantiateMigrationByClassName($name);
 
-        if ($this->canHandleMigration($class)) {
-            /** @var Migration $migration */
-            $migration = new $class($this->db);
-
-            if (self::OPERATION_REVERT == $operation) {
-                try {
-                    $migration->revert();
-
-                    return true;
-                } catch (MigrationFailureException $e) { // report if revert failed
-                    $this->logger->error($e->getMessage(), $e->getTrace());
-
-                    return false;
-                }
-            } else {
-                try {
-                    $migration->apply();
-
-                    return true;
-                } catch (MigrationFailureException $e) { // report if migration failed
-                    $this->logger->error($e->getMessage(), $e->getTrace());
-
-                    return false;
-                }
-            }
+        if (is_null($migration)) {
+            return new MigrationState();
         }
 
-        return false;
+        return $this->handleMigrations([$migration]);
+    }
+
+    /**
+     * @param string $className
+     * @return Migration|null
+     */
+    private function instantiateMigrationByClassName(string $className)
+    {
+        $class = self::MIGRATION_CLASS_PREFIX . $className;
+
+        if (!$this->canHandleMigration($class)) {
+            return null;
+        }
+
+        return new $class($this->db);
     }
 
     /**
@@ -150,17 +129,50 @@ class MigrationRun extends AbstractCommand
     }
 
     /**
-     * @return string[]
+     * @param string[] $migrationNames
+     * @return Migration[]
      */
-    private function getAllMigrations(): array
+    private function instantiateMigrationsArray(array $migrationNames): array
     {
         $migrations = [];
 
-        foreach (glob(self::MIGRATION_FILE_PATTERN) as $file) {
-            $migrations[] = basename($file, '.php');
+        foreach ($migrationNames as $name) {
+            $migration = $this->instantiateMigrationByClassName($name);
+
+            if (!is_null($migration)) {
+                $migrations[] = $migration;
+            }
         }
 
         return $migrations;
+    }
+
+    /**
+     * @param Migration[] $migrations
+     * @return MigrationState
+     */
+    private function handleMigrations(array $migrations): MigrationState
+    {
+        $state = new MigrationState();
+
+        foreach ($migrations as $migration) {
+            try {
+                if ($this->isRevert) {
+                    $migration->revert();
+                } else {
+                    $migration->apply();
+                }
+
+                $state->addSuccessful($migration);
+            } catch (NotMigratedException $e) {
+            } catch (AlreadyMigratedException $e) {
+            } catch (MigrationFailureException $e) {
+                $this->logger->error($e->getMessage(), $e->getTrace());
+                $state->addFailed($migration);
+            }
+        }
+
+        return $state;
     }
 
     /**

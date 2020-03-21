@@ -60,6 +60,7 @@ class AppKernel
         $this->bootstrapDb();
         $this->bootstrapRepositories();
         $this->bootstrapMailer();
+        $this->bootstrapClassDiscover();
         $this->bootstrapCommandBus();
     }
 
@@ -126,6 +127,11 @@ class AppKernel
         $this->registerService('mail', new Mail());
     }
 
+    private function bootstrapClassDiscover()
+    {
+        $this->registerService('ClassDiscover', new ClassDiscover());
+    }
+
     private function bootstrapCommandBus()
     {
         $memberRepository = $this->getService('MemberRepository');
@@ -133,6 +139,7 @@ class AppKernel
         $testerRepository = $this->getService('TesterRepository');
         $logger = $this->getService('logger');
         $db = $this->getService('db');
+        $classDiscover = $this->getService('ClassDiscover');
 
         $commandBus = new CommandBus($logger);
 
@@ -156,7 +163,7 @@ class AppKernel
         $commandBus->register(new TesterSwitch($logger, $testerRepository, $memberRepository, $subscriberRepository));
 
         // Migration Commands
-        $commandBus->register(new MigrationRun($logger, $db));
+        $commandBus->register(new MigrationRun($logger, $db, $classDiscover));
 
         $this->commandBus = $commandBus;
     }

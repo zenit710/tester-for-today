@@ -55,6 +55,6 @@ class Migration_20200320210200_create_schema extends Migration
      */
     public function getName(): string
     {
-        return '20200320210200_create_schema';
+        return 'Migration_20200320210200_create_schema';
     }
 }

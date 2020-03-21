@@ -12,7 +12,7 @@ $kernel->bootstrap();
 //    exit;
 //}
 //
-//echo $kernel->handle($argv[1], $argv);
+echo $kernel->handle($argv[1], $argv);
 //
 //// tests
 //echo $kernel->handle('member:clear', []);
@@ -27,7 +27,7 @@ $kernel->bootstrap();
 //echo $kernel->handle('tester:switch', ['--manual', '--id=1']);
 //
 //echo $kernel->handle('member:status', ['--id=1']);
-echo $kernel->handle('member:delete', ['--id=1']);
+//echo $kernel->handle('member:delete', ['--id=1']);
 //
 //echo $kernel->handle('subscriber:clear', []);
 //echo $kernel->handle('subscriber:add', ['--email=kamil_malek@tvn.pl']);
