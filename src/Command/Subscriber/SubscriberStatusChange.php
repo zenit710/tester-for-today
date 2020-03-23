@@ -54,19 +54,21 @@ class SubscriberStatusChange extends AbstractCommand
             return $this->help();
         }
 
-        if (array_key_exists(self::ARG_ACTIVE, $this->commandArgs)) {
-            $this->repository->activate($this->commandArgs[self::ARG_ID]);
-        } else if (array_key_exists(self::ARG_INACTIVE, $this->commandArgs)) {
-            $this->repository->deactivate($this->commandArgs[self::ARG_ID]);
+        $subscriptionId = $this->commandArgs[self::ARG_ID];
+
+        if ($this->hasArg(self::ARG_ACTIVE)) {
+            $this->repository->activate($subscriptionId);
+        } else if ($this->hasArg(self::ARG_INACTIVE)) {
+            $this->repository->deactivate($subscriptionId);
         } else {
-            $subscriber = $this->repository->getById($this->commandArgs[self::ARG_ID]);
+            $subscriber = $this->repository->getById($subscriptionId);
 
             $subscriber->active
-                ? $this->repository->deactivate($this->commandArgs[self::ARG_ID])
-                : $this->repository->activate($this->commandArgs[self::ARG_ID]);
+                ? $this->repository->deactivate($subscriptionId)
+                : $this->repository->activate($subscriptionId);
         }
 
-        $this->logger->info('Subscriber id: ' . $this->getArg(self::ARG_ID) . ' status changed');
+        $this->logger->info('Subscriber id: ' . $subscriptionId . ' status changed');
 
         return self::SUCCESS_MESSAGE;
     }

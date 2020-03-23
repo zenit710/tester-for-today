@@ -4,6 +4,8 @@ namespace Acme\Command\Tester;
 
 use Acme\Command\AbstractCommand;
 use Acme\Command\MissingArgumentException;
+use Acme\Entity\Absence\AbsenceFilter;
+use Acme\Entity\Absence\AbsenceRepositoryInterface;
 use Acme\Entity\NoResultException;
 use Acme\Entity\Subscriber\SubscriberFilter;
 use Acme\Entity\Subscriber\SubscriberRepositoryInterface;
@@ -40,6 +42,9 @@ class TesterSwitch extends AbstractCommand
     /** @var SubscriberRepositoryInterface */
     private $subscriberRepository;
 
+    /** @var AbsenceRepositoryInterface */
+    private $absenceRepository;
+
     /** @var MailServiceInterface */
     private $mailService;
 
@@ -49,6 +54,7 @@ class TesterSwitch extends AbstractCommand
      * @param TesterRepositoryInterface $testerRepository
      * @param MemberRepositoryInterface $memberRepository
      * @param SubscriberRepositoryInterface $subscriberRepository
+     * @param AbsenceRepositoryInterface $absenceRepository
      * @param MailServiceInterface $mailService
      */
     public function __construct(
@@ -56,6 +62,7 @@ class TesterSwitch extends AbstractCommand
         TesterRepositoryInterface $testerRepository,
         MemberRepositoryInterface $memberRepository,
         SubscriberRepositoryInterface $subscriberRepository,
+        AbsenceRepositoryInterface $absenceRepository,
         MailServiceInterface $mailService
     )
     {
@@ -63,6 +70,7 @@ class TesterSwitch extends AbstractCommand
         $this->testerRepository = $testerRepository;
         $this->memberRepository = $memberRepository;
         $this->subscriberRepository = $subscriberRepository;
+        $this->absenceRepository = $absenceRepository;
         $this->mailService = $mailService;
     }
 
@@ -85,7 +93,7 @@ class TesterSwitch extends AbstractCommand
         } else if ($this->hasArg(self::ARG_MANUAL) && $this->hasArg(self::ARG_ID)) {
             $nextTester = $this->memberRepository->getById($this->getArg(self::ARG_ID));
 
-            if (!$nextTester->active) {
+            if (!$nextTester->active || $this->isMemberAbsent($nextTester->id)) {
                 throw new InactiveTesterException('Selected member is not active!');
             }
 
@@ -97,7 +105,7 @@ class TesterSwitch extends AbstractCommand
         $tester->memberId = $nextTester->id;
         $this->testerRepository->add($tester);
         $this->logger->info('Tester changed. Current tester id: ' . $nextTester->id);
-        $this->notifySubscribers($nextTester);
+//        $this->notifySubscribers($nextTester);
 
         return self::SUCCESS_MESSAGE;
     }
@@ -130,6 +138,22 @@ class TesterSwitch extends AbstractCommand
         } catch (NoResultException $e) {
             return 0;
         }
+    }
+
+    /**
+     * @param int $memberId
+     * @return bool
+     */
+    private function isMemberAbsent(int $memberId): bool
+    {
+        $filter = new AbsenceFilter();
+        $filter->setMemberId($memberId);
+        $filter->setStartsTo(date('Y-m-d'));
+        $filter->setEndsFrom(date('Y-m-d'));
+
+        $memberAbsences = $this->absenceRepository->getAll($filter);
+
+        return count($memberAbsences) > 0;
     }
 
     /**

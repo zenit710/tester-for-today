@@ -54,19 +54,21 @@ class MemberStatusChange extends AbstractCommand
             return $this->help();
         }
 
-        if (array_key_exists(self::ARG_ACTIVE, $this->commandArgs)) {
-            $this->repository->activate($this->commandArgs[self::ARG_ID]);
-        } else if (array_key_exists(self::ARG_INACTIVE, $this->commandArgs)) {
-            $this->repository->deactivate($this->commandArgs[self::ARG_ID]);
+        $memberId = $this->commandArgs[self::ARG_ID];
+
+        if ($this->hasArg(self::ARG_ACTIVE)) {
+            $this->repository->activate($memberId);
+        } else if ($this->hasArg(self::ARG_INACTIVE)) {
+            $this->repository->deactivate($memberId);
         } else {
-            $member = $this->repository->getById($this->commandArgs[self::ARG_ID]);
+            $member = $this->repository->getById($memberId);
 
             $member->active
-                ? $this->repository->deactivate($this->commandArgs[self::ARG_ID])
-                : $this->repository->activate($this->commandArgs[self::ARG_ID]);
+                ? $this->repository->deactivate($memberId)
+                : $this->repository->activate($memberId);
         }
 
-        $this->logger->info('Member id: ' . $this->getArg(self::ARG_ID) . ' status changed');
+        $this->logger->info('Member id: ' . $memberId . ' status changed');
 
         return self::SUCCESS_MESSAGE;
     }

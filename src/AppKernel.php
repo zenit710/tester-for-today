@@ -2,6 +2,10 @@
 
 namespace Acme;
 
+use Acme\Command\Absence\AbsenceAdd;
+use Acme\Command\Absence\AbsenceClear;
+use Acme\Command\Absence\AbsenceList;
+use Acme\Command\Absence\AbsenceStatusChange;
 use Acme\Command\CommandBus;
 use Acme\Command\Migration\MigrationRun;
 use Acme\Command\Subscriber\SubscriberAdd;
@@ -17,6 +21,7 @@ use Acme\Command\Member\MemberList;
 use Acme\Command\Member\MemberStatusChange;
 use Acme\Command\Tester\TesterClear;
 use Acme\Command\Tester\TesterCurrent;
+use Acme\Entity\Absence\AbsenceRepository;
 use Acme\Entity\Subscriber\SubscriberRepository;
 use Acme\Entity\Member\MemberRepository;
 use Acme\Entity\Tester\TesterRepository;
@@ -151,6 +156,7 @@ class AppKernel
         $this->registerService('MemberRepository', new MemberRepository($db));
         $this->registerService('SubscriberRepository', new SubscriberRepository($db));
         $this->registerService('TesterRepository', new TesterRepository($db));
+        $this->registerService('AbsenceRepository', new AbsenceRepository($db));
     }
 
     private function bootstrapMailer()
@@ -172,6 +178,7 @@ class AppKernel
         $memberRepository = $this->getService('MemberRepository');
         $subscriberRepository = $this->getService('SubscriberRepository');
         $testerRepository = $this->getService('TesterRepository');
+        $absenceRepository = $this->getService('AbsenceRepository');
         $logger = $this->getService('logger');
         $db = $this->getService('db');
         $classDiscover = $this->getService('ClassDiscover');
@@ -202,9 +209,16 @@ class AppKernel
                 $testerRepository,
                 $memberRepository,
                 $subscriberRepository,
+                $absenceRepository,
                 $mailService
             )
         );
+
+        // Absence Commands
+        $commandBus->register(new AbsenceAdd($logger, $absenceRepository));
+        $commandBus->register(new AbsenceList($logger, $absenceRepository));
+        $commandBus->register(new AbsenceStatusChange($logger, $absenceRepository));
+        $commandBus->register(new AbsenceClear($logger, $absenceRepository));
 
         // Migration Commands
         $commandBus->register(new MigrationRun($logger, $db, $classDiscover));

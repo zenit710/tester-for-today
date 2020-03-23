@@ -71,9 +71,10 @@ class MemberRepository implements MemberRepositoryInterface
     public function getNextActiveById(int $id): MemberDTO
     {
         $memberStmt = $this->db->getConnection()->prepare('
-            SELECT *
-            FROM member
-            WHERE id > :id AND active = 1
+            SELECT m.*
+            FROM member m
+            LEFT JOIN absence a on a.member_id = m.id AND a.date_from <= DATE("now") AND a.date_to > DATE("now") 
+            WHERE m.id > :id AND m.active = 1 AND a.id IS NULL
             LIMIT 1
         ');
         $memberStmt->bindValue(':id', $id);
@@ -82,8 +83,10 @@ class MemberRepository implements MemberRepositoryInterface
 
         if (empty($member)) {
             $member = $this->db->getConnection()->querySingle('
-                SELECT *
-                FROM member
+                SELECT m.*
+                FROM member m
+                LEFT JOIN absence a on a.member_id = m.id AND a.date_from <= DATE("now") AND a.date_to > DATE("now")
+                WHERE m.active = 1 AND a.id IS NULL
             ', true);
         }
 

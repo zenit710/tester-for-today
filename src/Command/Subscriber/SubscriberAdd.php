@@ -54,7 +54,7 @@ class SubscriberAdd extends AbstractCommand
         }
 
         $subscriber = new SubscriberDTO();
-        $subscriber->email = $this->commandArgs[self::ARG_EMAIL];
+        $subscriber->email = $this->getArg(self::ARG_EMAIL);
 
         $this->repository->add($subscriber);
         $this->logger->info('Subscriber ' . $subscriber->email . ' added');
