@@ -118,7 +118,6 @@ It can cause data loss if database changes (e.g. inserts) were made in affected 
 
 ## TODO
 
-* add absence table to avoid absent testers
 * make interfaces for injected classes
 * write unit tests
 * add helper for pretty console printing
