@@ -20,6 +20,7 @@ use Acme\Command\Tester\TesterCurrent;
 use Acme\Entity\Subscriber\SubscriberRepository;
 use Acme\Entity\Member\MemberRepository;
 use Acme\Entity\Tester\TesterRepository;
+use Acme\Service\Mail\MailService;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as Monolog;
 
@@ -34,6 +35,9 @@ class AppKernel
 
     /** @var array */
     private $services = [];
+
+    /** @var array */
+    private $parameters = [];
 
     /** @var CommandBus */
     private $commandBus;
@@ -83,6 +87,33 @@ class AppKernel
     }
 
     /**
+     * @param string $name
+     * @param $value
+     */
+    public function addParameter(string $name, $value)
+    {
+        $this->parameters[$name] = $value;
+    }
+
+    /**
+     * @param string $name
+     * @return mixed|null
+     */
+    public function getParameter(string $name)
+    {
+        return isset($this->parameters[$name]) ? $this->parameters[$name] : null;
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasParameter(string $name): bool
+    {
+        return isset($this->parameters[$name]);
+    }
+
+    /**
      * @param string $command
      * @param array $args
      * @return string
@@ -124,7 +155,11 @@ class AppKernel
 
     private function bootstrapMailer()
     {
-        $this->registerService('mail', new Mail());
+        $this->registerService('MailService', new MailService(
+            $this->getParameter('gmail_user'),
+            $this->getParameter('gmail_user_name'),
+            $this->getParameter('gmail_password')
+        ));
     }
 
     private function bootstrapClassDiscover()
@@ -140,6 +175,7 @@ class AppKernel
         $logger = $this->getService('logger');
         $db = $this->getService('db');
         $classDiscover = $this->getService('ClassDiscover');
+        $mailService = $this->getService('MailService');
 
         $commandBus = new CommandBus($logger);
 
@@ -160,7 +196,15 @@ class AppKernel
         // Tester Commands
         $commandBus->register(new TesterCurrent($logger, $testerRepository));
         $commandBus->register(new TesterClear($logger, $testerRepository));
-        $commandBus->register(new TesterSwitch($logger, $testerRepository, $memberRepository, $subscriberRepository));
+        $commandBus->register(
+            new TesterSwitch(
+                $logger,
+                $testerRepository,
+                $memberRepository,
+                $subscriberRepository,
+                $mailService
+            )
+        );
 
         // Migration Commands
         $commandBus->register(new MigrationRun($logger, $db, $classDiscover));

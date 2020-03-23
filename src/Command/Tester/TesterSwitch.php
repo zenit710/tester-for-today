@@ -11,7 +11,7 @@ use Acme\Entity\Member\MemberDTO;
 use Acme\Entity\Member\MemberRepositoryInterface;
 use Acme\Entity\Tester\TesterDTO;
 use Acme\Entity\Tester\TesterRepositoryInterface;
-use Acme\Mail;
+use Acme\Service\Mail\MailServiceInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -40,24 +40,30 @@ class TesterSwitch extends AbstractCommand
     /** @var SubscriberRepositoryInterface */
     private $subscriberRepository;
 
+    /** @var MailServiceInterface */
+    private $mailService;
+
     /**
      * TesterSwitch constructor.
      * @param LoggerInterface $logger
      * @param TesterRepositoryInterface $testerRepository
      * @param MemberRepositoryInterface $memberRepository
      * @param SubscriberRepositoryInterface $subscriberRepository
+     * @param MailServiceInterface $mailService
      */
     public function __construct(
         LoggerInterface $logger,
         TesterRepositoryInterface $testerRepository,
         MemberRepositoryInterface $memberRepository,
-        SubscriberRepositoryInterface $subscriberRepository
+        SubscriberRepositoryInterface $subscriberRepository,
+        MailServiceInterface $mailService
     )
     {
         parent::__construct($logger);
         $this->testerRepository = $testerRepository;
         $this->memberRepository = $memberRepository;
         $this->subscriberRepository = $subscriberRepository;
+        $this->mailService = $mailService;
     }
 
     /**
@@ -91,7 +97,7 @@ class TesterSwitch extends AbstractCommand
         $tester->memberId = $nextTester->id;
         $this->testerRepository->add($tester);
         $this->logger->info('Tester changed. Current tester id: ' . $nextTester->id);
-//        $this->notifySubscribers($nextTester);
+        $this->notifySubscribers($nextTester);
 
         return self::SUCCESS_MESSAGE;
     }
@@ -137,7 +143,7 @@ class TesterSwitch extends AbstractCommand
         $subscribers = $this->subscriberRepository->getAll($subscriberFilter);
         $message = sprintf(self::MESSAGE_PATTERN, date('d-m-Y'), $newTester->name);
 
-        $mail = new Mail();
+        $mail = $this->mailService->create();
         $mail->Subject = self::MAIL_SUBJECT;
         $mail->Body = $message;
 
