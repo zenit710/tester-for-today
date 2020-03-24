@@ -32,13 +32,13 @@ class TesterDTO
     public static function fromArray(array $arr): TesterDTO {
         $tester = new TesterDTO();
 
-        if (!empty($arr['id'])) {
+        if (isset($arr['id'])) {
             $tester->id = $arr['id'];
         }
-        if (!empty($arr['memberId'])) {
+        if (isset($arr['memberId'])) {
             $tester->memberId = $arr['memberId'];
         }
-        if (!empty($arr['date'])) {
+        if (isset($arr['date'])) {
             $tester->date = $arr['date'];
         }
 

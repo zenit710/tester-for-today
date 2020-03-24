@@ -25,13 +25,13 @@ class MemberDTO
     {
         $member = new MemberDTO();
 
-        if (!empty($arr['id'])) {
+        if (isset($arr['id'])) {
             $member->id = $arr['id'];
         }
-        if (!empty($arr['name'])) {
+        if (isset($arr['name'])) {
             $member->name = $arr['name'];
         }
-        if (!empty($arr['active'])) {
+        if (isset($arr['active'])) {
             $member->active = !!$arr['active'];
         }
 

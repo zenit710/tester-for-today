@@ -39,20 +39,20 @@ class AbsenceDTO
     {
         $absence = new AbsenceDTO();
 
-        if (!empty($array['id'])) {
+        if (isset($array['id'])) {
             $absence->id = $array['id'];
         }
-        if (!empty($array['member_id'])) {
+        if (isset($array['member_id'])) {
             $absence->memberId = $array['member_id'];
         }
-        if (!empty($array['date_from'])) {
+        if (isset($array['date_from'])) {
             $absence->dateFrom = $array['date_from'];
         }
-        if (!empty($array['date_to'])) {
+        if (isset($array['date_to'])) {
             $absence->dateTo = $array['date_to'];
         }
-        if (!empty($array['canceled'])) {
-            $absence->canceled = $array['canceled'];
+        if (isset($array['canceled'])) {
+            $absence->canceled = !!$array['canceled'];
         }
 
         return $absence;

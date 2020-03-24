@@ -24,13 +24,13 @@ class SubscriberDTO
     public static function fromArray(array $arr): SubscriberDTO {
         $subscriber = new SubscriberDTO();
 
-        if (!empty($arr['id'])) {
+        if (isset($arr['id'])) {
             $subscriber->id = $arr['id'];
         }
-        if (!empty($arr['email'])) {
+        if (isset($arr['email'])) {
             $subscriber->email = $arr['email'];
         }
-        if (!empty($arr['active'])) {
+        if (isset($arr['active'])) {
             $subscriber->active = !!$arr['active'];
         }
 

@@ -199,6 +199,7 @@ class AbsenceFilter
      */
     public function toWhereClause(): string
     {
+        $this->pristineWhere = true;
         $where = '';
 
         if (!$this->isAdjusted()) {
@@ -238,7 +239,7 @@ class AbsenceFilter
      */
     private function getNextWhere(string $clause): string
     {
-        $where = $this->pristineWhere ? ' WHERE' : ' AND ';
+        $where = $this->pristineWhere ? ' WHERE' : ' AND';
         $this->pristineWhere = false;
 
         return $where . $clause;
