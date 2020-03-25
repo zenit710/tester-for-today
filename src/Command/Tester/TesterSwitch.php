@@ -165,6 +165,11 @@ class TesterSwitch extends AbstractCommand
         $subscriberFilter->setActive(true);
 
         $subscribers = $this->subscriberRepository->getAll($subscriberFilter);
+
+        if (count($subscribers) == 0) {
+            return;
+        }
+
         $message = sprintf(self::MESSAGE_PATTERN, date('d-m-Y'), $newTester->name);
 
         $mail = $this->mailService->create();
