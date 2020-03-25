@@ -87,10 +87,10 @@ class AbsenceList extends AbstractCommand
             . $this->commandName . ' options' . PHP_EOL
             . "\t options: " . PHP_EOL
             . "\t --canceled=[0|1] - only canceled/keep absences" . PHP_EOL
-            . "\t --starts_from=2099-12-31 - starts after date" . PHP_EOL
-            . "\t --starts_to=2099-12-31 - starts before date" . PHP_EOL
-            . "\t --ends_from=2099-12-31 - ends after date" . PHP_EOL
-            . "\t --ends_from=2099-12-31 - ends before date" . PHP_EOL
+            . "\t --starts-from=2099-12-31 - starts after date" . PHP_EOL
+            . "\t --starts-to=2099-12-31 - starts before date" . PHP_EOL
+            . "\t --ends-from=2099-12-31 - ends after date" . PHP_EOL
+            . "\t --ends-from=2099-12-31 - ends before date" . PHP_EOL
             . "\t --member-id=id - only one member absences" . PHP_EOL
             . "\t --help - get help" . PHP_EOL;
     }
