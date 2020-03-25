@@ -1,20 +1,20 @@
 <?php
 
-namespace Command\Absence;
+namespace Command\Member;
 
-use Acme\Command\Absence\AbsenceStatusChange;
+use Acme\Command\Member\MemberStatusChange;
 use Acme\Command\MissingArgumentException;
-use Acme\Entity\Absence\AbsenceDTO;
-use Acme\Entity\Absence\AbsenceRepository;
+use Acme\Entity\Member\MemberDTO;
+use Acme\Entity\Member\MemberRepository;
 use Acme\Entity\NoResultException;
 use Acme\Entity\NothingToUpdateException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class AbsenceStatusChangeTest extends TestCase
+class MemberStatusChangeTest extends TestCase
 {
-    /** @var AbsenceStatusChange */
+    /** @var MemberStatusChange */
     private $command;
 
     /** @var MockObject */
@@ -23,8 +23,8 @@ class AbsenceStatusChangeTest extends TestCase
     protected function setUp()
     {
         $logger = $this->createMock(LoggerInterface::class);
-        $this->repo = $this->createMock(AbsenceRepository::class);
-        $this->command = new AbsenceStatusChange($logger, $this->repo);
+        $this->repo = $this->createMock(MemberRepository::class);
+        $this->command = new MemberStatusChange($logger, $this->repo);
     }
 
     public function testRunWithoutRequiredArgs()
@@ -33,10 +33,10 @@ class AbsenceStatusChangeTest extends TestCase
         $this->command->run([]);
     }
 
-    public function testRunCancelByToggle()
+    public function testRunActivateByToggle()
     {
-        $activeDto = new AbsenceDTO();
-        $activeDto->canceled = false;
+        $activeDto = new MemberDTO();
+        $activeDto->active = false;
 
         $this->repo->expects($this->once())
             ->method('getById')
@@ -44,51 +44,51 @@ class AbsenceStatusChangeTest extends TestCase
             ->willReturn($activeDto);
 
         $this->repo->expects($this->once())
-            ->method('cancel')
+            ->method('activate')
             ->with($this->equalTo('1'));
 
         $this->command->run(['--id=1']);
     }
 
-    public function testRunRestoreByToggle()
+    public function testRunDeactivateByToggle()
     {
-        $canceledDto = new AbsenceDTO();
-        $canceledDto->canceled = true;
+        $inactiveDTO = new MemberDTO();
+        $inactiveDTO->active = true;
 
         $this->repo->expects($this->once())
             ->method('getById')
             ->with($this->equalTo('1'))
-            ->willReturn($canceledDto);
+            ->willReturn($inactiveDTO);
 
         $this->repo->expects($this->once())
-            ->method('restore')
+            ->method('deactivate')
             ->with($this->equalTo('1'));
 
         $this->command->run(['--id=1']);
     }
 
-    public function testRunRestoreByArg()
+    public function testRunActivateByArg()
     {
         $this->repo->expects($this->once())
-            ->method('restore')
+            ->method('activate')
             ->with($this->equalTo('1'));
 
-        $this->command->run(['--id=1', '--restore']);
+        $this->command->run(['--id=1', '--active']);
     }
 
-    public function testRunCancelByArg()
+    public function testRunDeactivateByArg()
     {
         $this->repo->expects($this->once())
-            ->method('cancel')
+            ->method('deactivate')
             ->with($this->equalTo('1'));
 
-        $this->command->run(['--id=1', '--cancel']);
+        $this->command->run(['--id=1', '--inactive']);
     }
 
-    public function testRunCancelByToggleWhenNoMember()
+    public function testRunActivationByToggleWhenNoMember()
     {
-        $activeDto = new AbsenceDTO();
-        $activeDto->canceled = false;
+        $activeDto = new MemberDTO();
+        $activeDto->active = false;
 
         $this->repo->expects($this->once())
             ->method('getById')
@@ -98,31 +98,31 @@ class AbsenceStatusChangeTest extends TestCase
         $this->expectException(NoResultException::class);
 
         $this->repo->expects($this->once())
-            ->method('cancel')
+            ->method('activate')
             ->willThrowException(new NoResultException());
 
         $this->command->run(['--id=1']);
     }
 
-    public function testRunCancelWhenNoMember()
+    public function testRunActivateWhenNoMember()
     {
         $this->expectException(NothingToUpdateException::class);
 
         $this->repo->expects($this->once())
-            ->method('cancel')
+            ->method('activate')
             ->willThrowException(new NothingToUpdateException());
 
-        $this->command->run(['--id=1', '--cancel']);
+        $this->command->run(['--id=1', '--active']);
     }
 
-    public function testRunRestoreWhenNoMember()
+    public function testRunDeactivateWhenNoMember()
     {
         $this->expectException(NothingToUpdateException::class);
 
         $this->repo->expects($this->once())
-            ->method('restore')
+            ->method('deactivate')
             ->willThrowException(new NothingToUpdateException());
 
-        $this->command->run(['--id=1', '--restore']);
+        $this->command->run(['--id=1', '--inactive']);
     }
 }

@@ -47,4 +47,13 @@ class AbsenceListTest extends TestCase
             '--ends-to=2099-12-31',
         ]);
     }
+
+    public function testRunWhenEmptyList()
+    {
+        $this->repo->expects($this->once())
+            ->method('getAll')
+            ->willReturn([]);
+
+        $this->assertSame(AbsenceList::NO_ABSENCES_MESSAGE, $this->command->run([]));
+    }
 }
