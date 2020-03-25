@@ -69,7 +69,7 @@ abstract class AbstractCommand
 
         foreach ($args as $arg) {
             if (preg_match(self::ARG_PATTERN, $arg)) {
-                list($key, $value) = explode('=', $arg);
+                @list($key, $value) = explode('=', $arg);
                 $key = substr($key, 2);
 
                 $commandArgs[$key] = isset($value) ? $value : null;

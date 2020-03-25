@@ -9,7 +9,7 @@ Get new tester for today and send notification to the team.
 
 ```bash
 docker image build -t tester-app .
-docker run --name=tester-app -it -v `pwd`:/var/app/tester tester-app sh
+docker run -it -v `pwd`:/var/app/tester tester-app sh
 ```
 
 then install composer packages after first run
@@ -22,6 +22,17 @@ and run migrations
 
 ```bash
 php app.php migration:run
+```
+
+### Tests
+
+```bash
+# just tests
+./vendor/phpunit/phpunit/phpunit tests
+# html coverage report
+./vendor/phpunit/phpunit/phpunit --coverage-html coverage/ tests
+# text coverage report in CLI
+./vendor/phpunit/phpunit/phpunit --coverage-text tests
 ```
 
 ## Kernel

@@ -11,7 +11,7 @@ class TesterDTOTest extends TestCase
     {
         $testerData = [
             'id' => 1,
-            'member_id' => 2,
+            'memberId' => 2,
             'date' => '2099-12-31'
         ];
 
