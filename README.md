@@ -129,6 +129,9 @@ It can cause data loss if database changes (e.g. inserts) were made in affected 
 
 ## TODO
 
+* xdebug on php 7.0
+* strpad with polish letters
+* where to deploy it?
 * make interfaces for injected classes
 * write unit tests
 * add helper for pretty console printing
