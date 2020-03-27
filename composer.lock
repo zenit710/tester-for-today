@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cb7b5c282acfee2d3b9f57eb7f3404cd",
+    "content-hash": "fa40baeafd1a1ab7db1153cb7111c616",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -1833,7 +1833,7 @@
     "prefer-lowest": false,
     "platform": {
         "ext-sqlite3": "*",
-        "php": "7.0.33"
+        "php": "^7.0"
     },
     "platform-dev": []
 }
