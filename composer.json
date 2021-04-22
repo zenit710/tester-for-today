@@ -1,4 +1,6 @@
 {
+  "name": "zenit710/tester-for-today",
+  "description": "Send mail with person who should make tests today",
   "require": {
     "ext-sqlite3": "*",
     "php": "^7.0",
