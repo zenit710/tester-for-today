@@ -33,7 +33,7 @@ class TesterRepository implements TesterRepositoryInterface
             SELECT *
             FROM tester
             JOIN member ON member_id = member.id
-            ORDER BY member.id DESC
+            ORDER BY tester.id DESC
         ', true);
 
         if (empty($last)) {

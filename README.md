@@ -138,4 +138,3 @@ It can cause data loss if database changes (e.g. inserts) were made in affected 
 * move from Sqlite lib to PDO lib
 * create instantiator for AppKernel services dependencies
 * split src directories to packages
-* __uncomment notification send in TesterSwitch command!__

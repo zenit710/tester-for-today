@@ -105,7 +105,7 @@ class TesterSwitch extends AbstractCommand
         $tester->memberId = $nextTester->id;
         $this->testerRepository->add($tester);
         $this->logger->info('Tester changed. Current tester id: ' . $nextTester->id);
-//        $this->notifySubscribers($nextTester);
+        $this->notifySubscribers($nextTester);
 
         return self::SUCCESS_MESSAGE;
     }
@@ -180,6 +180,10 @@ class TesterSwitch extends AbstractCommand
             $mail->addBCC($subscriber->email);
         }
 
-        $mail->send();
+        if (!$mail->send()) {
+            $this->logger->error('Mailer Error: ' . $mail->ErrorInfo);
+        } else {
+            $this->logger->debug('Message sent!');
+        }
     }
 }
